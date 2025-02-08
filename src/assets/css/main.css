@@ -84,3 +84,9 @@
         @apply font-sans antialiased bg-background text-foreground;
     }
 }
+
+@layer components {
+    .tl-watermark_SEE-LICENSE {
+        @apply !opacity-5;
+    }
+}
