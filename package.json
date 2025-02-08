@@ -1,6 +1,6 @@
 {
   "name": "tools.puncoz.com",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "next": "15.1.6",
+    "postcss": "^8.5.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.0.1",
+    "tailwindcss": "^4.0.4",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -21,8 +26,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
-    "postcss": "^8.5.1",
-    "tailwindcss": "^4.0.4",
     "typescript": "^5"
   },
   "engines": {

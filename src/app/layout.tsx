@@ -21,7 +21,7 @@ type Props = Readonly<{
 const RootLayout: FunctionComponent<Props> = ({ children }) => {
   return (
     <html lang="en">
-    <body className={`${inter.variable} font-sans antialiased`}>
+    <body className={`${inter.variable}`}>
     <main>
       {children}
     </main>
