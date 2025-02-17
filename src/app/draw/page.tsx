@@ -6,7 +6,7 @@ import "tldraw/tldraw.css"
 const DrawPage: FunctionComponent = () => {
   return (
     <div className="fixed inset-0">
-      <Tldraw/>
+      <Tldraw persistenceKey="tools.puncoz.com"/>
     </div>
   )
 }
