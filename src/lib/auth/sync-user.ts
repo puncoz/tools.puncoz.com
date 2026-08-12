@@ -2,14 +2,17 @@ import "server-only"
 import type { User } from "@workos-inc/node"
 import { sql } from "drizzle-orm"
 import { getDb } from "@/db"
-import { users } from "@/db/schema"
+import { type DbUser, users } from "@/db/schema"
 
 /**
- * Mirrors a WorkOS user into Postgres. Called once per sign-in, so profile
- * changes made in WorkOS propagate on the user's next visit.
+ * Mirrors a WorkOS user into Postgres and returns the local row.
+ *
+ * Called once per sign-in so profile changes propagate, and again lazily by
+ * `requireDbUser` — a sign-in whose sync failed (the write is deliberately
+ * non-fatal) must not leave the account unable to own drawings.
  */
-const syncUser = async (workosUser: User): Promise<void> => {
-  await getDb()
+const syncUser = async (workosUser: User): Promise<DbUser> => {
+  const [row] = await getDb()
     .insert(users)
     .values({
       workosId: workosUser.id,
@@ -32,6 +35,9 @@ const syncUser = async (workosUser: User): Promise<void> => {
         updatedAt: new Date(),
       },
     })
+    .returning()
+
+  return row
 }
 
 export { syncUser }

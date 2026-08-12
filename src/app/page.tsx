@@ -1,6 +1,8 @@
 import UserMenu from "@/components/auth/user-menu"
+import ImportLegacyDrawings from "@/components/tools/import-legacy-drawings"
 import ToolDirectory from "@/components/tools/tool-directory"
 import { clientConfig } from "@/config/client"
+import { getCurrentUser } from "@/lib/auth/session"
 
 type Props = {
   searchParams: Promise<{ error?: string }>
@@ -11,6 +13,7 @@ export const dynamic = "force-dynamic"
 
 const HomePage = async ({ searchParams }: Props) => {
   const { error } = await searchParams
+  const user = await getCurrentUser()
 
   return (
     <div className="min-h-screen">
@@ -38,6 +41,9 @@ const HomePage = async ({ searchParams }: Props) => {
         </p>
 
         <div className="mt-8 sm:mt-10">
+          {/* Importing writes to the account, so it is only offered once signed in. */}
+          {user && <ImportLegacyDrawings/>}
+
           <ToolDirectory/>
         </div>
       </main>
