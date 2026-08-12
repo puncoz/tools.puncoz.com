@@ -4,9 +4,13 @@ import { CloudUpload, Loader2, X } from "lucide-react"
 import Link from "next/link"
 import { type FunctionComponent, useEffect, useState } from "react"
 import { findLegacyDrawings, type LegacyDrawing } from "@/lib/tldraw/legacy-store"
+import { withProgress } from "@/lib/ui/progress"
 
 /** Set once the prompt has been dealt with, so it does not reappear every visit. */
 const DISMISSED_KEY = "tools.puncoz.com:legacy-import-dismissed"
+
+/** Deterministic, so re-importing the same local store is detectable server-side. */
+const importTitle = (persistenceKey: string): string => `Imported — ${persistenceKey}`
 
 type Phase = "checking" | "found" | "importing" | "done" | "hidden"
 
@@ -65,21 +69,45 @@ const ImportLegacyDrawings: FunctionComponent = () => {
     setPhase("hidden")
   }
 
-  const runImport = async () => {
+  const runImport = () => withProgress(async () => {
     setPhase("importing")
     setError(null)
+
+    // The localStorage flag alone is not enough to prevent duplicates: it is
+    // per-browser and can be cleared, and the same local store may be imported
+    // from another device. Checking what is already on the server makes a
+    // repeat import a no-op instead.
+    let alreadyImported = new Set<string>()
+
+    try {
+      const response = await fetch("/api/drawings")
+
+      if (response.ok) {
+        const { drawings } = await response.json() as { drawings: { title: string }[] }
+
+        alreadyImported = new Set(drawings.map(drawing => drawing.title))
+      }
+    } catch {
+      // Non-fatal: worst case a duplicate is created, which is recoverable.
+    }
 
     let count = 0
 
     for (const drawing of legacy) {
+      const title = importTitle(drawing.persistenceKey)
+
+      if (alreadyImported.has(title)) {
+        count += 1
+        setImported(count)
+
+        continue
+      }
+
       try {
         const response = await fetch("/api/drawings", {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            title: `Imported — ${drawing.persistenceKey}`,
-            document: drawing.document,
-          }),
+          body: JSON.stringify({ title, document: drawing.document }),
         })
 
         if (!response.ok) {
@@ -100,7 +128,7 @@ const ImportLegacyDrawings: FunctionComponent = () => {
     // data is left untouched, so a failed import can simply be retried.
     window.localStorage.setItem(DISMISSED_KEY, new Date().toISOString())
     setPhase("done")
-  }
+  })
 
   if (phase === "checking" || phase === "hidden") {
     return null

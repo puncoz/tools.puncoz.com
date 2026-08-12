@@ -4,6 +4,7 @@ import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import React, { type FunctionComponent } from "react"
+import TopProgressBar from "@/components/ui/top-progress-bar"
 import { clientConfig } from "@/config/client"
 import "@/assets/css/main.css"
 
@@ -27,6 +28,8 @@ const RootLayout: FunctionComponent<Props> = ({ children }) => {
     <html lang="en">
     <body className={`${inter.variable}`}>
     <AuthKitProvider>
+      <TopProgressBar/>
+
       <main>
         {children}
       </main>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { type FunctionComponent, useEffect, useState } from "react"
 import { useDrawing } from "@/components/tools/draw/drawing-context"
 import { DROPDOWN_CLASSES, PANEL_CLASSES, useDismissableMenu } from "@/components/tools/draw/floating-menu"
+import { startNavigation, withProgress } from "@/lib/ui/progress"
 import { cn } from "@/lib/utils"
 
 type Summary = { id: string, title: string }
@@ -56,14 +57,19 @@ const ProjectMenu: FunctionComponent = () => {
     setBusy(true)
 
     try {
-      const response = await fetch("/api/drawings", { method: "POST" })
+      await withProgress(async () => {
+        const response = await fetch("/api/drawings", { method: "POST" })
 
-      if (response.ok) {
-        const { drawing } = await response.json() as { drawing: Summary }
+        if (response.ok) {
+          const { drawing } = await response.json() as { drawing: Summary }
 
-        setOpen(false)
-        router.push(`/draw/${drawing.id}`)
-      }
+          setOpen(false)
+          // Handed to the navigation flag so the bar stays up until the new
+          // route renders, rather than ending when the fetch resolves.
+          startNavigation()
+          router.push(`/draw/${drawing.id}`)
+        }
+      })
     } finally {
       setBusy(false)
     }
@@ -81,15 +87,17 @@ const ProjectMenu: FunctionComponent = () => {
     setBusy(true)
 
     try {
-      await fetch(`/api/drawings/${id}`, {
-        method: "PATCH",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ title: next }),
-      })
+      await withProgress(async () => {
+        await fetch(`/api/drawings/${id}`, {
+          method: "PATCH",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ title: next }),
+        })
 
-      setRenaming(false)
-      setOpen(false)
-      router.refresh()
+        setRenaming(false)
+        setOpen(false)
+        router.refresh()
+      })
     } finally {
       setBusy(false)
     }
@@ -99,13 +107,16 @@ const ProjectMenu: FunctionComponent = () => {
     setBusy(true)
 
     try {
-      const response = await fetch(`/api/drawings/${id}`, { method: "DELETE" })
+      await withProgress(async () => {
+        const response = await fetch(`/api/drawings/${id}`, { method: "DELETE" })
 
-      if (response.ok) {
-        setOpen(false)
-        // /draw redirects to the next most recent drawing, or creates one.
-        router.push("/draw")
-      }
+        if (response.ok) {
+          setOpen(false)
+          startNavigation()
+          // /draw redirects to the next most recent drawing, or creates one.
+          router.push("/draw")
+        }
+      })
     } finally {
       setBusy(false)
     }
@@ -168,6 +179,7 @@ const ProjectMenu: FunctionComponent = () => {
                         role="menuitem"
                         onClick={() => {
                           setOpen(false)
+                          startNavigation()
                           router.push(`/draw/${drawing.id}`)
                         }}
                         className="flex w-full items-center px-3 py-2 pl-8 text-left text-sm transition-colors hover:bg-accent"
