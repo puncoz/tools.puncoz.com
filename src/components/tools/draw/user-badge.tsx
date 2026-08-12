@@ -1,7 +1,8 @@
 "use client"
 
 import { useAuth } from "@workos-inc/authkit-nextjs/components"
-import { LogOut } from "lucide-react"
+import { LogOut, Settings } from "lucide-react"
+import Link from "next/link"
 import type { FunctionComponent } from "react"
 import { DROPDOWN_CLASSES, PANEL_CLASSES, useDismissableMenu } from "@/components/tools/draw/floating-menu"
 import { cn } from "@/lib/utils"
@@ -45,6 +46,15 @@ const UserBadge: FunctionComponent = () => {
           <p className="truncate px-3 py-2 text-xs text-muted-foreground">{user.email}</p>
 
           <div className="my-1 h-px bg-border"/>
+
+          <Link
+            href="/settings/storage"
+            role="menuitem"
+            className="flex w-full items-center gap-2 px-3 py-2 text-sm transition-colors hover:bg-accent"
+          >
+            <Settings className="size-3.5" aria-hidden="true"/>
+            Storage settings
+          </Link>
 
           <button
             type="button"

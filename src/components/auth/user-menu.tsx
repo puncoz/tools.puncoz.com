@@ -20,6 +20,13 @@ const UserMenu = async () => {
     <div className="flex items-center gap-3">
       <span className="text-sm text-muted-foreground">{user.firstName ?? user.email}</span>
 
+      <Link
+        href="/settings/storage"
+        className="rounded-md border border-border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+      >
+        Settings
+      </Link>
+
       <form action={signOutAction}>
         <button
           type="submit"

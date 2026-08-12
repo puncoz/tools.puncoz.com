@@ -9,6 +9,7 @@ import {
   Tldraw,
   type TLComponents,
 } from "tldraw"
+import { createAssetStore } from "@/components/tools/draw/asset-store"
 import { DrawingContext } from "@/components/tools/draw/drawing-context"
 import HomeButton from "@/components/tools/draw/home-button"
 import ProjectMenu from "@/components/tools/draw/project-menu"
@@ -48,6 +49,9 @@ const DrawCanvas: FunctionComponent<Props> = ({ drawing }) => {
     const created = createTLStore({
       shapeUtils: defaultShapeUtils,
       bindingUtils: defaultBindingUtils,
+      // Sends images to the user's own bucket instead of embedding them as
+      // base64 in the document.
+      assets: createAssetStore(),
     })
 
     if (isSnapshot(drawing.document)) {

@@ -29,6 +29,20 @@
       "when": 1786522299207,
       "tag": "0003_drawings_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786525104469,
+      "tag": "0004_create_storage_credentials",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1786525105274,
+      "tag": "0005_storage_credentials_rls",
+      "breakpoints": true
     }
   ]
 }
