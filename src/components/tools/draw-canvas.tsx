@@ -1,9 +1,10 @@
 "use client"
+
 import { FunctionComponent } from "react"
 import { Tldraw } from "tldraw"
 import "tldraw/tldraw.css"
 
-const DrawPage: FunctionComponent = () => {
+const DrawCanvas: FunctionComponent = () => {
   return (
     <div className="fixed inset-0">
       <Tldraw persistenceKey="tools.puncoz.com"/>
@@ -11,4 +12,4 @@ const DrawPage: FunctionComponent = () => {
   )
 }
 
-export default DrawPage
+export default DrawCanvas

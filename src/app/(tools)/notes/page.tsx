@@ -1,8 +1,10 @@
 import Editor from "@/components/editor"
 import EditorProvider from "@/components/providers/editor-provider"
-import { FunctionComponent } from "react"
+import { requireAuth } from "@/lib/auth/session"
 
-const NotesPage: FunctionComponent = () => {
+const NotesPage = async () => {
+  await requireAuth()
+
   return (
     <EditorProvider>
       <Editor/>

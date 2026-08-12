@@ -1,8 +1,10 @@
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import React, { type FunctionComponent } from "react"
+import { clientConfig } from "@/config/client"
 import "@/assets/css/main.css"
 
 const inter = Inter({
@@ -12,8 +14,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Tools | Puncoz Nepal",
-  description: "Some useful tools for developers.",
+  title: clientConfig.app.name,
+  description: clientConfig.app.description,
 }
 
 type Props = Readonly<{
@@ -24,9 +26,11 @@ const RootLayout: FunctionComponent<Props> = ({ children }) => {
   return (
     <html lang="en">
     <body className={`${inter.variable}`}>
-    <main>
-      {children}
-    </main>
+    <AuthKitProvider>
+      <main>
+        {children}
+      </main>
+    </AuthKitProvider>
 
     <SpeedInsights/>
     <Analytics/>
