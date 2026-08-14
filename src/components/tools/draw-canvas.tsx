@@ -13,6 +13,7 @@ import {
 import { createAssetStore } from "@/components/tools/draw/asset-store"
 import { DrawingContext } from "@/components/tools/draw/drawing-context"
 import { customShapeUtils } from "@/components/tools/draw/shapes"
+import { clientConfig } from "@/config/client"
 import HomeButton from "@/components/tools/draw/home-button"
 import ProjectMenu from "@/components/tools/draw/project-menu"
 import SharePanel from "@/components/tools/draw/share-panel"
@@ -89,6 +90,7 @@ const DrawCanvas: FunctionComponent<Props> = ({ drawing }) => {
           store={store}
           shapeUtils={customShapeUtils}
           components={components}
+          licenseKey={clientConfig.tldraw.licenseKey}
           onMount={setEditor}
         />
       </div>

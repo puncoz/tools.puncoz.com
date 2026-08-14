@@ -12,6 +12,7 @@ import {
 } from "tldraw"
 import { createSharedAssetStore } from "@/components/tools/draw/shared-asset-store"
 import { customShapeUtils } from "@/components/tools/draw/shapes"
+import { clientConfig } from "@/config/client"
 import "tldraw/tldraw.css"
 
 /**
@@ -80,6 +81,7 @@ const SharedCanvas: FunctionComponent<Props> = ({ token, document }) => {
         store={store}
         shapeUtils={customShapeUtils}
         components={components}
+        licenseKey={clientConfig.tldraw.licenseKey}
         onMount={onMount}
       />
     </div>

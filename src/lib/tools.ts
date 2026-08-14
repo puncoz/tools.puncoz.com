@@ -24,6 +24,15 @@ type Tool = {
   status: ToolStatus
   /** Extra search terms that are not in the name or description. */
   keywords: string[]
+  /**
+   * The library this tool is built on, credited on the landing page. Declared
+   * here so attribution lives beside the tool rather than hardcoded in a
+   * component, and so a new tool cannot quietly ship without it.
+   */
+  builtWith?: {
+    name: string
+    href: string
+  }
 }
 
 const CATEGORY_LABELS: Record<ToolCategory, string> = {
@@ -41,6 +50,7 @@ const TOOLS: Tool[] = [
     category: "canvas",
     status: "live",
     keywords: ["tldraw", "whiteboard", "diagram", "sketch", "canvas", "excalidraw"],
+    builtWith: { name: "tldraw", href: "https://tldraw.dev" },
   },
   {
     slug: "notes",

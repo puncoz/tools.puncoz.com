@@ -48,8 +48,15 @@ Three are easy to get wrong:
   paid add-on, so it fails on most home and CI networks; the session pooler is
   IPv4 on every tier.
 
+`NEXT_PUBLIC_TLDRAW_LICENSE_KEY` is optional — without it tldraw works and only
+logs a warning about production use. It is `NEXT_PUBLIC_` by necessity: tldraw
+validates the licence in the browser, so the key ships in the client bundle. It
+is a licence assertion rather than a credential, and is meant to be readable
+there.
+
 Missing variables are caught at boot by `src/instrumentation.ts` rather than at
-the first call site, so the app fails fast with a list of what is absent.
+the first call site, so the app fails fast with a list of what is absent. The
+licence key is deliberately *not* in that required list.
 
 ## Scripts
 

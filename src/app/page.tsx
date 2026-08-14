@@ -1,5 +1,6 @@
 import UserMenu from "@/components/auth/user-menu"
 import ImportLegacyDrawings from "@/components/tools/import-legacy-drawings"
+import ToolCredits from "@/components/tools/tool-credits"
 import ToolDirectory from "@/components/tools/tool-directory"
 import { clientConfig } from "@/config/client"
 import { getCurrentUser } from "@/lib/auth/session"
@@ -33,7 +34,7 @@ const HomePage = async ({ searchParams }: Props) => {
         )}
 
         <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Tools for developers
+          {clientConfig.app.tagline}
         </h1>
 
         <p className="mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
@@ -46,6 +47,8 @@ const HomePage = async ({ searchParams }: Props) => {
 
           <ToolDirectory/>
         </div>
+
+        <ToolCredits/>
       </main>
     </div>
   )
