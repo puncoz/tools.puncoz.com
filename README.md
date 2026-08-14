@@ -126,30 +126,32 @@ tables unreachable if the anon key ever leaks.
 
 ## Deployment
 
-Vercel, with the build command overridden in [`vercel.json`](vercel.json):
+Vercel, using the default `bun run build`. Two things are load-bearing.
 
-```
-bun scripts/build-aws-icons.ts && ./node_modules/.bin/next build
-```
+### Next is pinned to 16.2.12
 
-Two things are load-bearing.
+**Do not upgrade to 16.3.x without re-testing the deploy.** Bun 1.3.14 segfaults
+during `next build`'s "Collecting page data" phase on Next.js 16.3.0 — an open
+bug on the Linux x64 baseline build Vercel uses
+([oven-sh/bun#36866](https://github.com/oven-sh/bun/issues/36866)). The build
+prints its full route table and *then* dies with `panic: Segmentation fault`.
 
-**Next is built with Node, not Bun.** Bun 1.3.14 segfaults during `next build`'s
-"Collecting page data" phase on Next.js 16.3.0 — an open bug on the Linux x64
-baseline build Vercel uses ([oven-sh/bun#36866](https://github.com/oven-sh/bun/issues/36866)).
-The default `bun run build` hands `next` to Bun's runtime and the build dies with
-`panic: Segmentation fault` *after* printing its route table. Invoking
-`./node_modules/.bin/next` runs it under Node via its shebang. Bun still installs
-dependencies and still runs the icon script, which is TypeScript. If this ever
-resurfaces, the other known workaround is pinning Next to 16.2.12.
+Building with Node instead of Bun is the other documented workaround, but it is
+not available here: Vercel's Bun build image has no `node` on `PATH`, so
+`./node_modules/.bin/next` fails its `#!/usr/bin/env node` shebang with
+`env: 'node': No such file or directory`. That absence is also *why* the crash
+happens at all — `bun run build` cannot find Node to execute `next`, so it falls
+back to running it under Bun's own runtime.
 
-**The icon step must run before `next build`.** `public/aws-icons/` is gitignored
-and generated from the `aws-icons` dependency; skip the script and every AWS icon
-404s in production *without the build failing*. It is chained explicitly rather
-than through a `prebuild` hook, because Bun does not run those the way npm does.
+Once the Bun bug is fixed, unpinning `next` and `eslint-config-next` together is
+all that should be needed.
 
-If Vercel's dashboard has a Build Command set, clear it — `vercel.json` should be
-the single source of truth.
+### The icon step must run before `next build`
+
+`public/aws-icons/` is gitignored and generated from the `aws-icons` dependency;
+skip the script and every AWS icon 404s in production *without the build
+failing*. It is chained explicitly inside the `build` script rather than through
+a `prebuild` hook, because Bun does not run those the way npm does.
 
 ## Working in this repo
 
