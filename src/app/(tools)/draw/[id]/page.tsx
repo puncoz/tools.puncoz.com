@@ -31,6 +31,9 @@ const DrawPage = async ({ params }: Props) => {
         document: drawing.document,
         // Drives the one-off backfill for drawings that predate previews.
         hasThumbnail: drawing.thumbnailUpdatedAt !== null,
+        // The button's state before the popover is opened. The token itself is
+        // fetched on demand and never sent to the client here.
+        isShared: drawing.shareToken !== null,
       }}
     />
   )

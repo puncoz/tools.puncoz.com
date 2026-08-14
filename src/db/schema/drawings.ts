@@ -1,4 +1,4 @@
-import { index, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
+import { index, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core"
 import { users } from "@/db/schema/users"
 
 /**
@@ -25,12 +25,20 @@ export const drawings = pgTable("drawings", {
   // not be — the two writes are debounced independently, so a preview can change
   // while `updatedAt` stands still.
   thumbnailUpdatedAt: timestamp("thumbnail_updated_at", { withTimezone: true }),
+  // Null means not shared. A non-null token is a bearer credential: whoever holds
+  // it can read this drawing without signing in. Sharing is off until switched on.
+  shareToken: text("share_token"),
+  sharedAt: timestamp("shared_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   lastOpenedAt: timestamp("last_opened_at", { withTimezone: true }),
 }, table => [
-  // Drives both the drawing list and the "most recent" redirect on /draw.
+  // Drives the drawing gallery's ordering.
   index("drawings_user_updated_idx").on(table.userId, table.updatedAt.desc()),
+  // Makes lookup by share token a single indexed read, and turns a token
+  // collision into a write error rather than two drawings sharing a link.
+  // Postgres treats nulls as distinct here, so unshared rows are unconstrained.
+  uniqueIndex("drawings_share_token_idx").on(table.shareToken),
 ])
 
 export type DbDrawing = typeof drawings.$inferSelect

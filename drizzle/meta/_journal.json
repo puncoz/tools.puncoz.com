@@ -50,6 +50,13 @@
       "when": 1786668026553,
       "tag": "0006_add_drawing_thumbnail",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1786670720410,
+      "tag": "0007_add_drawing_share",
+      "breakpoints": true
     }
   ]
 }

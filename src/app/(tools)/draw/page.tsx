@@ -54,6 +54,7 @@ const DrawIndexPage = async () => {
               updatedLabel: `Edited ${relativeTime(drawing.updatedAt, now)}`,
               updatedAbsolute: absolute.format(drawing.updatedAt),
               thumbnailVersion: drawing.thumbnailUpdatedAt?.toISOString() ?? null,
+              isShared: drawing.isShared,
             }))}
           />
         </div>

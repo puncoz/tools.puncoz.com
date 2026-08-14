@@ -41,6 +41,7 @@ type Props = Readonly<{
     title: string
     document: unknown
     hasThumbnail: boolean
+    isShared: boolean
   }
 }>
 
@@ -73,7 +74,14 @@ const DrawCanvas: FunctionComponent<Props> = ({ drawing }) => {
   useThumbnail(editor, store, drawing.id, drawing.hasThumbnail)
 
   return (
-    <DrawingContext.Provider value={{ id: drawing.id, title: drawing.title, saveState }}>
+    <DrawingContext.Provider
+      value={{
+        id: drawing.id,
+        title: drawing.title,
+        saveState,
+        isShared: drawing.isShared,
+      }}
+    >
       <div className="fixed inset-0">
         <Tldraw store={store} components={components} onMount={setEditor}/>
       </div>

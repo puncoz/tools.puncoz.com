@@ -7,6 +7,12 @@ type DrawingContextValue = {
   id: string
   title: string
   saveState: SaveState
+  /**
+   * Whether a share link exists, as of the last server render. The share button
+   * uses it so it shows the right state before anyone opens the popover; the
+   * popover itself then works from the live value it fetches.
+   */
+  isShared: boolean
 }
 
 /**

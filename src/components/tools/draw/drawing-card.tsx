@@ -1,9 +1,10 @@
 "use client"
 
-import { Copy, MoreHorizontal, Pencil, Trash2 } from "lucide-react"
+import { Copy, MoreHorizontal, Pencil, Share2, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { type FunctionComponent, useState } from "react"
 import { useDismissableMenu } from "@/components/tools/draw/floating-menu"
+import ShareControls from "@/components/tools/draw/share-controls"
 import { startNavigation, withProgress } from "@/lib/ui/progress"
 import { cn } from "@/lib/utils"
 
@@ -16,6 +17,7 @@ type GalleryDrawing = {
   updatedAbsolute: string
   /** Doubles as "has a preview" and as the cache buster on the preview URL. */
   thumbnailVersion: string | null
+  isShared: boolean
 }
 
 type Props = Readonly<{
@@ -30,6 +32,8 @@ const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
   const [busy, setBusy] = useState(false)
   const [renaming, setRenaming] = useState(false)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [sharing, setSharing] = useState(false)
+  const [isShared, setIsShared] = useState(drawing.isShared)
   const [draftTitle, setDraftTitle] = useState(drawing.title)
 
   const run = async (action: () => Promise<void>) => {
@@ -140,8 +144,19 @@ const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
             <div className="px-3 py-2.5">
               <p className="truncate text-sm font-medium">{drawing.title}</p>
 
-              <p className="mt-0.5 text-xs text-muted-foreground" title={drawing.updatedAbsolute}>
-                {drawing.updatedLabel}
+              <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <span title={drawing.updatedAbsolute}>{drawing.updatedLabel}</span>
+
+                {/* Visible at a glance, so a live link is never forgotten. */}
+                {isShared && (
+                  <span
+                    title="Anyone with the link can view this drawing"
+                    className="inline-flex items-center gap-1 rounded bg-muted px-1.5 py-0.5 text-[11px] text-foreground"
+                  >
+                    <Share2 className="size-3" aria-hidden="true"/>
+                    Shared
+                  </span>
+                )}
               </p>
             </div>
           </Link>
@@ -153,6 +168,7 @@ const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
           disabled={busy}
           onClick={() => {
             setConfirmingDelete(false)
+            setSharing(false)
             setOpen(current => !current)
           }}
           aria-haspopup="menu"
@@ -171,11 +187,20 @@ const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
         {open && (
           <div
             role="menu"
-            className="absolute right-0 top-full z-10 mt-1 w-48 overflow-hidden rounded-lg border border-border bg-popover py-1 text-popover-foreground shadow-lg"
+            className={cn(
+              "absolute right-0 top-full z-10 mt-1 overflow-hidden rounded-lg border border-border bg-popover py-1 text-popover-foreground shadow-lg",
+              // The share view holds a full URL; the action list does not.
+              sharing ? "w-72 p-1" : "w-48",
+            )}
           >
-            {confirmingDelete
-              ? (
-                <>
+            {sharing && (
+              <ShareControls drawingId={drawing.id} onSharedChange={setIsShared}/>
+            )}
+
+            {/* Three independent guards rather than nested ternaries: the menu
+                has three mutually exclusive faces and reads better flat. */}
+            {!sharing && confirmingDelete && (
+              <>
                   <p className="px-3 py-2 text-xs text-muted-foreground">
                     Delete this drawing? This cannot be undone.
                   </p>
@@ -199,10 +224,11 @@ const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
                   >
                     Cancel
                   </button>
-                </>
-              )
-              : (
-                <>
+              </>
+            )}
+
+            {!sharing && !confirmingDelete && (
+              <>
                   <button
                     type="button"
                     role="menuitem"
@@ -216,6 +242,16 @@ const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
                   >
                     <Pencil className="size-3.5" aria-hidden="true"/>
                     Rename
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => setSharing(true)}
+                    className={menuItemClasses}
+                  >
+                    <Share2 className="size-3.5" aria-hidden="true"/>
+                    {isShared ? "Share link" : "Share"}
                   </button>
 
                   <button
@@ -239,8 +275,8 @@ const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
                     <Trash2 className="size-3.5" aria-hidden="true"/>
                     Delete
                   </button>
-                </>
-              )}
+              </>
+            )}
           </div>
         )}
       </div>
