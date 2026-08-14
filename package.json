@@ -13,7 +13,7 @@
     "@vercel/speed-insights": "^1.2.0",
     "clsx": "^2.1.1",
     "motion": "^12.4.1",
-    "next": "15.1.6",
+    "next": "15.1.11",
     "novel": "^1.0.2",
     "postcss": "^8.5.1",
     "react": "^19.0.0",
