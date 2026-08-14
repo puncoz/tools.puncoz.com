@@ -1,6 +1,6 @@
 "use client"
 
-import { Check, ChevronDown, FilePlus2, Loader2, Pencil, Trash2 } from "lucide-react"
+import { Check, ChevronDown, FilePlus2, LayoutGrid, Loader2, Pencil, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { type FunctionComponent, useEffect, useState } from "react"
 import { useDrawing } from "@/components/tools/draw/drawing-context"
@@ -113,7 +113,7 @@ const ProjectMenu: FunctionComponent = () => {
         if (response.ok) {
           setOpen(false)
           startNavigation()
-          // /draw redirects to the next most recent drawing, or creates one.
+          // Back to the gallery — there is no canvas left to stay on.
           router.push("/draw")
         }
       })
@@ -198,6 +198,20 @@ const ProjectMenu: FunctionComponent = () => {
                 )}
 
                 <div className="my-1 h-px bg-border"/>
+
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setOpen(false)
+                    startNavigation()
+                    router.push("/draw")
+                  }}
+                  className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-accent"
+                >
+                  <LayoutGrid className="size-3.5" aria-hidden="true"/>
+                  All drawings
+                </button>
 
                 <button
                   type="button"

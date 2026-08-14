@@ -25,7 +25,13 @@ const DrawPage = async ({ params }: Props) => {
       // Forces a fresh store when switching drawings; without it the previous
       // document would linger and be autosaved over the new one.
       key={drawing.id}
-      drawing={{ id: drawing.id, title: drawing.title, document: drawing.document }}
+      drawing={{
+        id: drawing.id,
+        title: drawing.title,
+        document: drawing.document,
+        // Drives the one-off backfill for drawings that predate previews.
+        hasThumbnail: drawing.thumbnailUpdatedAt !== null,
+      }}
     />
   )
 }

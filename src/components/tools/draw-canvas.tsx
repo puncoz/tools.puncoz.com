@@ -5,6 +5,7 @@ import {
   createTLStore,
   defaultBindingUtils,
   defaultShapeUtils,
+  type Editor,
   loadSnapshot,
   Tldraw,
   type TLComponents,
@@ -15,6 +16,7 @@ import HomeButton from "@/components/tools/draw/home-button"
 import ProjectMenu from "@/components/tools/draw/project-menu"
 import SharePanel from "@/components/tools/draw/share-panel"
 import { useAutosave } from "@/components/tools/draw/use-autosave"
+import { useThumbnail } from "@/components/tools/draw/use-thumbnail"
 import "tldraw/tldraw.css"
 
 /**
@@ -38,6 +40,7 @@ type Props = Readonly<{
     id: string
     title: string
     document: unknown
+    hasThumbnail: boolean
   }
 }>
 
@@ -61,12 +64,18 @@ const DrawCanvas: FunctionComponent<Props> = ({ drawing }) => {
     return created
   })
 
+  // Only the thumbnail hook needs the editor itself; everything else works off
+  // the store, which exists before tldraw mounts.
+  const [editor, setEditor] = useState<Editor | null>(null)
+
   const saveState = useAutosave(store, drawing.id)
+
+  useThumbnail(editor, store, drawing.id, drawing.hasThumbnail)
 
   return (
     <DrawingContext.Provider value={{ id: drawing.id, title: drawing.title, saveState }}>
       <div className="fixed inset-0">
-        <Tldraw store={store} components={components}/>
+        <Tldraw store={store} components={components} onMount={setEditor}/>
       </div>
     </DrawingContext.Provider>
   )

@@ -43,6 +43,13 @@
       "when": 1786525105274,
       "tag": "0005_storage_credentials_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786668026553,
+      "tag": "0006_add_drawing_thumbnail",
+      "breakpoints": true
     }
   ]
 }
