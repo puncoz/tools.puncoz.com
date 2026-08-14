@@ -1,0 +1,4 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "bun scripts/build-aws-icons.ts && ./node_modules/.bin/next build"
+}
