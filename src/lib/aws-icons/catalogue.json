@@ -1,0 +1,1198 @@
+[
+  {
+    "slug": "amazon-api-gateway",
+    "name": "Amazon API Gateway"
+  },
+  {
+    "slug": "amazon-app-flow",
+    "name": "Amazon AppFlow"
+  },
+  {
+    "slug": "amazon-application-recovery-controller",
+    "name": "Amazon Application Recovery Controller"
+  },
+  {
+    "slug": "amazon-athena",
+    "name": "Amazon Athena"
+  },
+  {
+    "slug": "amazon-augmented-aia2-i",
+    "name": "Amazon Augmented AI A2I"
+  },
+  {
+    "slug": "amazon-aurora",
+    "name": "Amazon Aurora"
+  },
+  {
+    "slug": "amazon-bedrock",
+    "name": "Amazon Bedrock"
+  },
+  {
+    "slug": "amazon-bedrock-agent-core",
+    "name": "Amazon Bedrock AgentCore"
+  },
+  {
+    "slug": "amazon-braket",
+    "name": "Amazon Braket"
+  },
+  {
+    "slug": "amazon-chime",
+    "name": "Amazon Chime"
+  },
+  {
+    "slug": "amazon-chime-sdk",
+    "name": "Amazon Chime SDK"
+  },
+  {
+    "slug": "amazon-cloud-directory",
+    "name": "Amazon Cloud Directory"
+  },
+  {
+    "slug": "amazon-cloud-front",
+    "name": "Amazon CloudFront"
+  },
+  {
+    "slug": "amazon-cloud-search",
+    "name": "Amazon CloudSearch"
+  },
+  {
+    "slug": "amazon-cloud-watch",
+    "name": "Amazon CloudWatch"
+  },
+  {
+    "slug": "amazon-code-catalyst",
+    "name": "Amazon CodeCatalyst"
+  },
+  {
+    "slug": "amazon-code-guru",
+    "name": "Amazon CodeGuru"
+  },
+  {
+    "slug": "amazon-code-whisperer",
+    "name": "Amazon CodeWhisperer"
+  },
+  {
+    "slug": "amazon-cognito",
+    "name": "Amazon Cognito"
+  },
+  {
+    "slug": "amazon-comprehend",
+    "name": "Amazon Comprehend"
+  },
+  {
+    "slug": "amazon-comprehend-medical",
+    "name": "Amazon Comprehend Medical"
+  },
+  {
+    "slug": "amazon-connect",
+    "name": "Amazon Connect"
+  },
+  {
+    "slug": "amazon-corretto",
+    "name": "Amazon Corretto"
+  },
+  {
+    "slug": "amazon-data-firehose",
+    "name": "Amazon Data Firehose"
+  },
+  {
+    "slug": "amazon-data-zone",
+    "name": "Amazon DataZone"
+  },
+  {
+    "slug": "amazon-dcv",
+    "name": "Amazon DCV"
+  },
+  {
+    "slug": "amazon-detective",
+    "name": "Amazon Detective"
+  },
+  {
+    "slug": "amazon-dev-ops-guru",
+    "name": "Amazon DevOps Guru"
+  },
+  {
+    "slug": "amazon-document-db",
+    "name": "Amazon DocumentDB"
+  },
+  {
+    "slug": "amazon-dynamo-db",
+    "name": "Amazon DynamoDB"
+  },
+  {
+    "slug": "amazon-ec2",
+    "name": "Amazon EC2"
+  },
+  {
+    "slug": "amazon-ec2-auto-scaling",
+    "name": "Amazon EC2 Auto Scaling"
+  },
+  {
+    "slug": "amazon-ec2-image-builder",
+    "name": "Amazon EC2 Image Builder"
+  },
+  {
+    "slug": "amazon-ecs-anywhere",
+    "name": "Amazon ECS Anywhere"
+  },
+  {
+    "slug": "amazon-efs",
+    "name": "Amazon EFS"
+  },
+  {
+    "slug": "amazon-eks-anywhere",
+    "name": "Amazon EKS Anywhere"
+  },
+  {
+    "slug": "amazon-eks-distro",
+    "name": "Amazon EKS Distro"
+  },
+  {
+    "slug": "amazon-elastic-block-store",
+    "name": "Amazon Elastic Block Store"
+  },
+  {
+    "slug": "amazon-elastic-container-registry",
+    "name": "Amazon Elastic Container Registry"
+  },
+  {
+    "slug": "amazon-elastic-container-service",
+    "name": "Amazon Elastic Container Service"
+  },
+  {
+    "slug": "amazon-elastic-inference",
+    "name": "Amazon Elastic Inference"
+  },
+  {
+    "slug": "amazon-elastic-kubernetes-service",
+    "name": "Amazon Elastic Kubernetes Service"
+  },
+  {
+    "slug": "amazon-elastic-v-mware-service",
+    "name": "Amazon Elastic VMware Service"
+  },
+  {
+    "slug": "amazon-elasti-cache",
+    "name": "Amazon ElastiCache"
+  },
+  {
+    "slug": "amazon-emr",
+    "name": "Amazon EMR"
+  },
+  {
+    "slug": "amazon-event-bridge",
+    "name": "Amazon EventBridge"
+  },
+  {
+    "slug": "amazon-file-cache",
+    "name": "Amazon File Cache"
+  },
+  {
+    "slug": "amazon-fin-space",
+    "name": "Amazon FinSpace"
+  },
+  {
+    "slug": "amazon-forecast",
+    "name": "Amazon Forecast"
+  },
+  {
+    "slug": "amazon-fraud-detector",
+    "name": "Amazon Fraud Detector"
+  },
+  {
+    "slug": "amazon-f-sx",
+    "name": "Amazon FSx"
+  },
+  {
+    "slug": "amazon-f-sxfor-lustre",
+    "name": "Amazon FSx for Lustre"
+  },
+  {
+    "slug": "amazon-f-sxfor-net-app-ontap",
+    "name": "Amazon FSx for NetApp ONTAP"
+  },
+  {
+    "slug": "amazon-f-sxfor-open-zfs",
+    "name": "Amazon FSx for OpenZFS"
+  },
+  {
+    "slug": "amazon-f-sxfor-wfs",
+    "name": "Amazon FSx for WFS"
+  },
+  {
+    "slug": "amazon-game-lift-servers",
+    "name": "Amazon GameLift Servers"
+  },
+  {
+    "slug": "amazon-game-lift-streams",
+    "name": "Amazon GameLift Streams"
+  },
+  {
+    "slug": "amazon-guard-duty",
+    "name": "Amazon GuardDuty"
+  },
+  {
+    "slug": "amazon-inspector",
+    "name": "Amazon Inspector"
+  },
+  {
+    "slug": "amazon-interactive-video-service",
+    "name": "Amazon Interactive Video Service"
+  },
+  {
+    "slug": "amazon-kendra",
+    "name": "Amazon Kendra"
+  },
+  {
+    "slug": "amazon-keyspaces",
+    "name": "Amazon Keyspaces"
+  },
+  {
+    "slug": "amazon-kinesis",
+    "name": "Amazon Kinesis"
+  },
+  {
+    "slug": "amazon-kinesis-data-streams",
+    "name": "Amazon Kinesis Data Streams"
+  },
+  {
+    "slug": "amazon-kinesis-video-streams",
+    "name": "Amazon Kinesis Video Streams"
+  },
+  {
+    "slug": "amazon-lex",
+    "name": "Amazon Lex"
+  },
+  {
+    "slug": "amazon-lightsail",
+    "name": "Amazon Lightsail"
+  },
+  {
+    "slug": "amazon-lightsailfor-research",
+    "name": "Amazon Lightsail for Research"
+  },
+  {
+    "slug": "amazon-location-service",
+    "name": "Amazon Location Service"
+  },
+  {
+    "slug": "amazon-lookoutfor-equipment",
+    "name": "Amazon Lookout for Equipment"
+  },
+  {
+    "slug": "amazon-lookoutfor-vision",
+    "name": "Amazon Lookout for Vision"
+  },
+  {
+    "slug": "amazon-macie",
+    "name": "Amazon Macie"
+  },
+  {
+    "slug": "amazon-managed-blockchain",
+    "name": "Amazon Managed Blockchain"
+  },
+  {
+    "slug": "amazon-managed-grafana",
+    "name": "Amazon Managed Grafana"
+  },
+  {
+    "slug": "amazon-managed-servicefor-apache-flink",
+    "name": "Amazon Managed Service for Apache Flink"
+  },
+  {
+    "slug": "amazon-managed-servicefor-prometheus",
+    "name": "Amazon Managed Service for Prometheus"
+  },
+  {
+    "slug": "amazon-managed-streamingfor-apache-kafka",
+    "name": "Amazon Managed Streaming for Apache Kafka"
+  },
+  {
+    "slug": "amazon-managed-workflowsfor-apache-airflow",
+    "name": "Amazon Managed Workflows for Apache Airflow"
+  },
+  {
+    "slug": "amazon-memory-db",
+    "name": "Amazon MemoryDB"
+  },
+  {
+    "slug": "amazon-monitron",
+    "name": "Amazon Monitron"
+  },
+  {
+    "slug": "amazon-mq",
+    "name": "Amazon MQ"
+  },
+  {
+    "slug": "amazon-neptune",
+    "name": "Amazon Neptune"
+  },
+  {
+    "slug": "amazon-nova",
+    "name": "Amazon Nova"
+  },
+  {
+    "slug": "amazon-open-search-service",
+    "name": "Amazon OpenSearch Service"
+  },
+  {
+    "slug": "amazon-personalize",
+    "name": "Amazon Personalize"
+  },
+  {
+    "slug": "amazon-pinpoint",
+    "name": "Amazon Pinpoint"
+  },
+  {
+    "slug": "amazon-pinpoint-ap-is",
+    "name": "Amazon Pinpoint APIs"
+  },
+  {
+    "slug": "amazon-polly",
+    "name": "Amazon Polly"
+  },
+  {
+    "slug": "amazon-q",
+    "name": "Amazon Q"
+  },
+  {
+    "slug": "amazon-quick-suite",
+    "name": "Amazon Quick Suite"
+  },
+  {
+    "slug": "amazon-rds",
+    "name": "Amazon RDS"
+  },
+  {
+    "slug": "amazon-redshift",
+    "name": "Amazon Redshift"
+  },
+  {
+    "slug": "amazon-rekognition",
+    "name": "Amazon Rekognition"
+  },
+  {
+    "slug": "amazon-route53",
+    "name": "Amazon Route 53"
+  },
+  {
+    "slug": "amazon-s3on-outposts",
+    "name": "Amazon S3 on Outposts"
+  },
+  {
+    "slug": "amazon-sage-maker",
+    "name": "Amazon SageMaker"
+  },
+  {
+    "slug": "amazon-sage-maker-ai",
+    "name": "Amazon SageMaker AI"
+  },
+  {
+    "slug": "amazon-sage-maker-ground-truth",
+    "name": "Amazon SageMaker Ground Truth"
+  },
+  {
+    "slug": "amazon-sage-maker-studio-lab",
+    "name": "Amazon SageMaker Studio Lab"
+  },
+  {
+    "slug": "amazon-security-lake",
+    "name": "Amazon Security Lake"
+  },
+  {
+    "slug": "amazon-simple-email-service",
+    "name": "Amazon Simple Email Service"
+  },
+  {
+    "slug": "amazon-simple-notification-service",
+    "name": "Amazon Simple Notification Service"
+  },
+  {
+    "slug": "amazon-simple-queue-service",
+    "name": "Amazon Simple Queue Service"
+  },
+  {
+    "slug": "amazon-simple-storage-service",
+    "name": "Amazon Simple Storage Service"
+  },
+  {
+    "slug": "amazon-simple-storage-service-glacier",
+    "name": "Amazon Simple Storage Service Glacier"
+  },
+  {
+    "slug": "amazon-textract",
+    "name": "Amazon Textract"
+  },
+  {
+    "slug": "amazon-timestream",
+    "name": "Amazon Timestream"
+  },
+  {
+    "slug": "amazon-transcribe",
+    "name": "Amazon Transcribe"
+  },
+  {
+    "slug": "amazon-translate",
+    "name": "Amazon Translate"
+  },
+  {
+    "slug": "amazon-verified-permissions",
+    "name": "Amazon Verified Permissions"
+  },
+  {
+    "slug": "amazon-virtual-private-cloud",
+    "name": "Amazon Virtual Private Cloud"
+  },
+  {
+    "slug": "amazon-vpc-lattice",
+    "name": "Amazon VPC Lattice"
+  },
+  {
+    "slug": "amazon-work-docs",
+    "name": "Amazon WorkDocs"
+  },
+  {
+    "slug": "amazon-work-docs-sdk",
+    "name": "Amazon WorkDocs SDK"
+  },
+  {
+    "slug": "amazon-work-mail",
+    "name": "Amazon WorkMail"
+  },
+  {
+    "slug": "amazon-work-spaces",
+    "name": "Amazon WorkSpaces"
+  },
+  {
+    "slug": "apache-mx-neton-aws",
+    "name": "Apache MXNet on AWS"
+  },
+  {
+    "slug": "aws-activate",
+    "name": "AWS Activate"
+  },
+  {
+    "slug": "aws-amplify",
+    "name": "AWS Amplify"
+  },
+  {
+    "slug": "aws-app-mesh",
+    "name": "AWS App Mesh"
+  },
+  {
+    "slug": "aws-app-runner",
+    "name": "AWS App Runner"
+  },
+  {
+    "slug": "aws-app-studio",
+    "name": "AWS App Studio"
+  },
+  {
+    "slug": "aws-app-config",
+    "name": "AWS AppConfig"
+  },
+  {
+    "slug": "aws-app-fabric",
+    "name": "AWS AppFabric"
+  },
+  {
+    "slug": "aws-application-auto-scaling",
+    "name": "AWS Application Auto Scaling"
+  },
+  {
+    "slug": "aws-application-discovery-service",
+    "name": "AWS Application Discovery Service"
+  },
+  {
+    "slug": "aws-application-migration-service",
+    "name": "AWS Application Migration Service"
+  },
+  {
+    "slug": "aws-app-sync",
+    "name": "AWS AppSync"
+  },
+  {
+    "slug": "aws-artifact",
+    "name": "AWS Artifact"
+  },
+  {
+    "slug": "aws-audit-manager",
+    "name": "AWS Audit Manager"
+  },
+  {
+    "slug": "aws-auto-scaling",
+    "name": "AWS Auto Scaling"
+  },
+  {
+    "slug": "awsb2-b-data-interchange",
+    "name": "AWS B2B Data Interchange"
+  },
+  {
+    "slug": "aws-backint-agent",
+    "name": "AWS Backint Agent"
+  },
+  {
+    "slug": "aws-backup",
+    "name": "AWS Backup"
+  },
+  {
+    "slug": "aws-batch",
+    "name": "AWS Batch"
+  },
+  {
+    "slug": "aws-billing-conductor",
+    "name": "AWS Billing Conductor"
+  },
+  {
+    "slug": "aws-budgets",
+    "name": "AWS Budgets"
+  },
+  {
+    "slug": "aws-certificate-manager",
+    "name": "AWS Certificate Manager"
+  },
+  {
+    "slug": "aws-chatbot",
+    "name": "AWS Chatbot"
+  },
+  {
+    "slug": "aws-clean-rooms",
+    "name": "AWS Clean Rooms"
+  },
+  {
+    "slug": "aws-client-vpn",
+    "name": "AWS Client VPN"
+  },
+  {
+    "slug": "aws-cloud-control-api",
+    "name": "AWS Cloud Control API"
+  },
+  {
+    "slug": "aws-cloud-development-kit",
+    "name": "AWS Cloud Development Kit"
+  },
+  {
+    "slug": "aws-cloud-map",
+    "name": "AWS Cloud Map"
+  },
+  {
+    "slug": "aws-cloud-wan",
+    "name": "AWS Cloud WAN"
+  },
+  {
+    "slug": "aws-cloud9",
+    "name": "AWS Cloud9"
+  },
+  {
+    "slug": "aws-cloud-formation",
+    "name": "AWS CloudFormation"
+  },
+  {
+    "slug": "aws-cloud-hsm",
+    "name": "AWS CloudHSM"
+  },
+  {
+    "slug": "aws-cloud-shell",
+    "name": "AWS CloudShell"
+  },
+  {
+    "slug": "aws-cloud-trail",
+    "name": "AWS CloudTrail"
+  },
+  {
+    "slug": "aws-code-artifact",
+    "name": "AWS CodeArtifact"
+  },
+  {
+    "slug": "aws-code-build",
+    "name": "AWS CodeBuild"
+  },
+  {
+    "slug": "aws-code-commit",
+    "name": "AWS CodeCommit"
+  },
+  {
+    "slug": "aws-code-deploy",
+    "name": "AWS CodeDeploy"
+  },
+  {
+    "slug": "aws-code-pipeline",
+    "name": "AWS CodePipeline"
+  },
+  {
+    "slug": "aws-command-line-interface",
+    "name": "AWS Command Line Interface"
+  },
+  {
+    "slug": "aws-compute-optimizer",
+    "name": "AWS Compute Optimizer"
+  },
+  {
+    "slug": "aws-config",
+    "name": "AWS Config"
+  },
+  {
+    "slug": "aws-console-mobile-application",
+    "name": "AWS Console Mobile Application"
+  },
+  {
+    "slug": "aws-control-tower",
+    "name": "AWS Control Tower"
+  },
+  {
+    "slug": "aws-costand-usage-report",
+    "name": "AWS Cost and Usage Report"
+  },
+  {
+    "slug": "aws-cost-explorer",
+    "name": "AWS Cost Explorer"
+  },
+  {
+    "slug": "aws-data-exchange",
+    "name": "AWS Data Exchange"
+  },
+  {
+    "slug": "aws-data-transfer-terminal",
+    "name": "AWS Data Transfer Terminal"
+  },
+  {
+    "slug": "aws-database-migration-service",
+    "name": "AWS Database Migration Service"
+  },
+  {
+    "slug": "aws-data-sync",
+    "name": "AWS DataSync"
+  },
+  {
+    "slug": "aws-deadline-cloud",
+    "name": "AWS Deadline Cloud"
+  },
+  {
+    "slug": "aws-deep-learning-am-is",
+    "name": "AWS Deep Learning AMIs"
+  },
+  {
+    "slug": "aws-deep-learning-containers",
+    "name": "AWS Deep Learning Containers"
+  },
+  {
+    "slug": "aws-deep-racer",
+    "name": "AWS DeepRacer"
+  },
+  {
+    "slug": "aws-device-farm",
+    "name": "AWS Device Farm"
+  },
+  {
+    "slug": "aws-dev-ops-agent",
+    "name": "AWS DevOps Agent"
+  },
+  {
+    "slug": "aws-direct-connect",
+    "name": "AWS Direct Connect"
+  },
+  {
+    "slug": "aws-directory-service",
+    "name": "AWS Directory Service"
+  },
+  {
+    "slug": "aws-distrofor-open-telemetry",
+    "name": "AWS Distro for OpenTelemetry"
+  },
+  {
+    "slug": "aws-elastic-beanstalk",
+    "name": "AWS Elastic Beanstalk"
+  },
+  {
+    "slug": "aws-elastic-disaster-recovery",
+    "name": "AWS Elastic Disaster Recovery"
+  },
+  {
+    "slug": "aws-elemental-appliances-software",
+    "name": "AWS Elemental Appliances & Software"
+  },
+  {
+    "slug": "aws-elemental-conductor",
+    "name": "AWS Elemental Conductor"
+  },
+  {
+    "slug": "aws-elemental-delta",
+    "name": "AWS Elemental Delta"
+  },
+  {
+    "slug": "aws-elemental-link",
+    "name": "AWS Elemental Link"
+  },
+  {
+    "slug": "aws-elemental-live",
+    "name": "AWS Elemental Live"
+  },
+  {
+    "slug": "aws-elemental-media-connect",
+    "name": "AWS Elemental MediaConnect"
+  },
+  {
+    "slug": "aws-elemental-media-convert",
+    "name": "AWS Elemental MediaConvert"
+  },
+  {
+    "slug": "aws-elemental-media-live",
+    "name": "AWS Elemental MediaLive"
+  },
+  {
+    "slug": "aws-elemental-media-package",
+    "name": "AWS Elemental MediaPackage"
+  },
+  {
+    "slug": "aws-elemental-media-store",
+    "name": "AWS Elemental MediaStore"
+  },
+  {
+    "slug": "aws-elemental-media-tailor",
+    "name": "AWS Elemental MediaTailor"
+  },
+  {
+    "slug": "aws-elemental-server",
+    "name": "AWS Elemental Server"
+  },
+  {
+    "slug": "aws-end-user-messaging",
+    "name": "AWS End User Messaging"
+  },
+  {
+    "slug": "aws-entity-resolution",
+    "name": "AWS Entity Resolution"
+  },
+  {
+    "slug": "aws-express-workflows",
+    "name": "AWS Express Workflows"
+  },
+  {
+    "slug": "aws-fargate",
+    "name": "AWS Fargate"
+  },
+  {
+    "slug": "aws-fault-injection-service",
+    "name": "AWS Fault Injection Service"
+  },
+  {
+    "slug": "aws-firewall-manager",
+    "name": "AWS Firewall Manager"
+  },
+  {
+    "slug": "aws-global-accelerator",
+    "name": "AWS Global Accelerator"
+  },
+  {
+    "slug": "aws-glue",
+    "name": "AWS Glue"
+  },
+  {
+    "slug": "aws-glue-data-brew",
+    "name": "AWS Glue DataBrew"
+  },
+  {
+    "slug": "aws-ground-station",
+    "name": "AWS Ground Station"
+  },
+  {
+    "slug": "aws-health-dashboard",
+    "name": "AWS Health Dashboard"
+  },
+  {
+    "slug": "aws-health-imaging",
+    "name": "AWS HealthImaging"
+  },
+  {
+    "slug": "aws-health-lake",
+    "name": "AWS HealthLake"
+  },
+  {
+    "slug": "aws-health-omics",
+    "name": "AWS HealthOmics"
+  },
+  {
+    "slug": "aws-health-scribe",
+    "name": "AWS HealthScribe"
+  },
+  {
+    "slug": "awsiam-identity-center",
+    "name": "AWS IAM Identity Center"
+  },
+  {
+    "slug": "aws-identityand-access-management",
+    "name": "AWS Identity and Access Management"
+  },
+  {
+    "slug": "aws-infrastructure-composer",
+    "name": "AWS Infrastructure Composer"
+  },
+  {
+    "slug": "aws-io-t-core",
+    "name": "AWS IoT Core"
+  },
+  {
+    "slug": "aws-io-t-device-defender",
+    "name": "AWS IoT Device Defender"
+  },
+  {
+    "slug": "aws-io-t-device-management",
+    "name": "AWS IoT Device Management"
+  },
+  {
+    "slug": "aws-io-t-events",
+    "name": "AWS IoT Events"
+  },
+  {
+    "slug": "aws-io-t-express-link",
+    "name": "AWS IoT ExpressLink"
+  },
+  {
+    "slug": "aws-io-t-fleet-wise",
+    "name": "AWS IoT FleetWise"
+  },
+  {
+    "slug": "aws-io-t-greengrass",
+    "name": "AWS IoT Greengrass"
+  },
+  {
+    "slug": "aws-io-t-site-wise",
+    "name": "AWS IoT SiteWise"
+  },
+  {
+    "slug": "aws-io-t-twin-maker",
+    "name": "AWS IoT TwinMaker"
+  },
+  {
+    "slug": "awsiq",
+    "name": "AWS IQ"
+  },
+  {
+    "slug": "aws-key-management-service",
+    "name": "AWS Key Management Service"
+  },
+  {
+    "slug": "aws-lake-formation",
+    "name": "AWS Lake Formation"
+  },
+  {
+    "slug": "aws-lambda",
+    "name": "AWS Lambda"
+  },
+  {
+    "slug": "aws-launch-wizard",
+    "name": "AWS Launch Wizard"
+  },
+  {
+    "slug": "aws-license-manager",
+    "name": "AWS License Manager"
+  },
+  {
+    "slug": "aws-local-zones",
+    "name": "AWS Local Zones"
+  },
+  {
+    "slug": "aws-mainframe-modernization",
+    "name": "AWS Mainframe Modernization"
+  },
+  {
+    "slug": "aws-managed-services",
+    "name": "AWS Managed Services"
+  },
+  {
+    "slug": "aws-management-console",
+    "name": "AWS Management Console"
+  },
+  {
+    "slug": "aws-marketplace",
+    "name": "AWS Marketplace"
+  },
+  {
+    "slug": "aws-migration-evaluator",
+    "name": "AWS Migration Evaluator"
+  },
+  {
+    "slug": "aws-migration-hub",
+    "name": "AWS Migration Hub"
+  },
+  {
+    "slug": "aws-network-firewall",
+    "name": "AWS Network Firewall"
+  },
+  {
+    "slug": "aws-neuron",
+    "name": "AWS Neuron"
+  },
+  {
+    "slug": "aws-nitro-enclaves",
+    "name": "AWS Nitro Enclaves"
+  },
+  {
+    "slug": "aws-organizations",
+    "name": "AWS Organizations"
+  },
+  {
+    "slug": "aws-outpostsfamily",
+    "name": "AWS Outposts family"
+  },
+  {
+    "slug": "aws-outpostsrack",
+    "name": "AWS Outposts rack"
+  },
+  {
+    "slug": "aws-outpostsservers",
+    "name": "AWS Outposts servers"
+  },
+  {
+    "slug": "aws-panorama",
+    "name": "AWS Panorama"
+  },
+  {
+    "slug": "aws-parallel-cluster",
+    "name": "AWS Parallel Cluster"
+  },
+  {
+    "slug": "aws-parallel-computing-service",
+    "name": "AWS Parallel Computing Service"
+  },
+  {
+    "slug": "aws-partner-central",
+    "name": "AWS Partner Central"
+  },
+  {
+    "slug": "aws-payment-cryptography",
+    "name": "AWS Payment Cryptography"
+  },
+  {
+    "slug": "aws-private-certificate-authority",
+    "name": "AWS Private Certificate Authority"
+  },
+  {
+    "slug": "aws-private-link",
+    "name": "AWS PrivateLink"
+  },
+  {
+    "slug": "aws-professional-services",
+    "name": "AWS Professional Services"
+  },
+  {
+    "slug": "aws-proton",
+    "name": "AWS Proton"
+  },
+  {
+    "slug": "aw-sre-post",
+    "name": "AWS rePost"
+  },
+  {
+    "slug": "aw-sre-post-private",
+    "name": "AWS rePost Private"
+  },
+  {
+    "slug": "aws-resilience-hub",
+    "name": "AWS Resilience Hub"
+  },
+  {
+    "slug": "aws-resource-access-manager",
+    "name": "AWS Resource Access Manager"
+  },
+  {
+    "slug": "aws-resource-explorer",
+    "name": "AWS Resource Explorer"
+  },
+  {
+    "slug": "awsrtb-fabric",
+    "name": "AWS RTB Fabric"
+  },
+  {
+    "slug": "aws-secrets-manager",
+    "name": "AWS Secrets Manager"
+  },
+  {
+    "slug": "aws-security-agent",
+    "name": "AWS Security Agent"
+  },
+  {
+    "slug": "aws-security-hub",
+    "name": "AWS Security Hub"
+  },
+  {
+    "slug": "aws-security-incident-response",
+    "name": "AWS Security Incident Response"
+  },
+  {
+    "slug": "aws-serverless-application-repository",
+    "name": "AWS Serverless Application Repository"
+  },
+  {
+    "slug": "aws-service-catalog",
+    "name": "AWS Service Catalog"
+  },
+  {
+    "slug": "aws-service-management-connector",
+    "name": "AWS Service Management Connector"
+  },
+  {
+    "slug": "aws-shield",
+    "name": "AWS Shield"
+  },
+  {
+    "slug": "aws-signer",
+    "name": "AWS Signer"
+  },
+  {
+    "slug": "aws-sim-space-weaver",
+    "name": "AWS SimSpace Weaver"
+  },
+  {
+    "slug": "aws-siteto-site-vpn",
+    "name": "AWS Site to Site VPN"
+  },
+  {
+    "slug": "aws-snowball",
+    "name": "AWS Snowball"
+  },
+  {
+    "slug": "aws-snowball-edge",
+    "name": "AWS Snowball Edge"
+  },
+  {
+    "slug": "aws-step-functions",
+    "name": "AWS Step Functions"
+  },
+  {
+    "slug": "aws-storage-gateway",
+    "name": "AWS Storage Gateway"
+  },
+  {
+    "slug": "aws-supply-chain",
+    "name": "AWS Supply Chain"
+  },
+  {
+    "slug": "aws-support",
+    "name": "AWS Support"
+  },
+  {
+    "slug": "aws-systems-manager",
+    "name": "AWS Systems Manager"
+  },
+  {
+    "slug": "aws-telco-network-builder",
+    "name": "AWS Telco Network Builder"
+  },
+  {
+    "slug": "aws-thinkbox-deadline",
+    "name": "AWS Thinkbox Deadline"
+  },
+  {
+    "slug": "aws-thinkbox-frost",
+    "name": "AWS Thinkbox Frost"
+  },
+  {
+    "slug": "aws-thinkbox-krakatoa",
+    "name": "AWS Thinkbox Krakatoa"
+  },
+  {
+    "slug": "aws-thinkbox-stoke",
+    "name": "AWS Thinkbox Stoke"
+  },
+  {
+    "slug": "aws-thinkbox-x-mesh",
+    "name": "AWS Thinkbox XMesh"
+  },
+  {
+    "slug": "aws-toolsand-sd-ks",
+    "name": "AWS Tools and SDKs"
+  },
+  {
+    "slug": "aws-training-certification",
+    "name": "AWS Training Certification"
+  },
+  {
+    "slug": "aws-transfer-family",
+    "name": "AWS Transfer Family"
+  },
+  {
+    "slug": "aws-transform",
+    "name": "AWS Transform"
+  },
+  {
+    "slug": "aws-transit-gateway",
+    "name": "AWS Transit Gateway"
+  },
+  {
+    "slug": "aws-trusted-advisor",
+    "name": "AWS Trusted Advisor"
+  },
+  {
+    "slug": "aws-user-notifications",
+    "name": "AWS User Notifications"
+  },
+  {
+    "slug": "aws-verified-access",
+    "name": "AWS Verified Access"
+  },
+  {
+    "slug": "awswaf",
+    "name": "AWS WAF"
+  },
+  {
+    "slug": "aws-wavelength",
+    "name": "AWS Wavelength"
+  },
+  {
+    "slug": "aws-well-architected-tool",
+    "name": "AWS Well Architected Tool"
+  },
+  {
+    "slug": "aws-wickr",
+    "name": "AWS Wickr"
+  },
+  {
+    "slug": "awsx-ray",
+    "name": "AWS X Ray"
+  },
+  {
+    "slug": "bottlerocket",
+    "name": "Bottlerocket"
+  },
+  {
+    "slug": "elastic-fabric-adapter",
+    "name": "Elastic Fabric Adapter"
+  },
+  {
+    "slug": "elastic-load-balancing",
+    "name": "Elastic Load Balancing"
+  },
+  {
+    "slug": "free-rtos",
+    "name": "FreeRTOS"
+  },
+  {
+    "slug": "open3-d-engine",
+    "name": "Open 3D Engine"
+  },
+  {
+    "slug": "oracle-databaseat-aws",
+    "name": "Oracle Database at AWS"
+  },
+  {
+    "slug": "py-torchon-aws",
+    "name": "PyTorch on AWS"
+  },
+  {
+    "slug": "red-hat-open-shift-serviceon-aws",
+    "name": "Red Hat OpenShift Service on AWS"
+  },
+  {
+    "slug": "reserved-instance-reporting",
+    "name": "Reserved Instance Reporting"
+  },
+  {
+    "slug": "savings-plans",
+    "name": "Savings Plans"
+  },
+  {
+    "slug": "tensor-flowon-aws",
+    "name": "TensorFlow on AWS"
+  }
+]

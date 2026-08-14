@@ -12,6 +12,7 @@ import {
 } from "tldraw"
 import { createAssetStore } from "@/components/tools/draw/asset-store"
 import { DrawingContext } from "@/components/tools/draw/drawing-context"
+import { customShapeUtils } from "@/components/tools/draw/shapes"
 import HomeButton from "@/components/tools/draw/home-button"
 import ProjectMenu from "@/components/tools/draw/project-menu"
 import SharePanel from "@/components/tools/draw/share-panel"
@@ -51,7 +52,8 @@ const DrawCanvas: FunctionComponent<Props> = ({ drawing }) => {
   // initial document out of the undo history.
   const [store] = useState(() => {
     const created = createTLStore({
-      shapeUtils: defaultShapeUtils,
+      // Must match `shared-canvas.tsx` — see the note in `shapes/index.ts`.
+      shapeUtils: [...defaultShapeUtils, ...customShapeUtils],
       bindingUtils: defaultBindingUtils,
       // Sends images to the user's own bucket instead of embedding them as
       // base64 in the document.
@@ -83,7 +85,12 @@ const DrawCanvas: FunctionComponent<Props> = ({ drawing }) => {
       }}
     >
       <div className="fixed inset-0">
-        <Tldraw store={store} components={components} onMount={setEditor}/>
+        <Tldraw
+          store={store}
+          shapeUtils={customShapeUtils}
+          components={components}
+          onMount={setEditor}
+        />
       </div>
     </DrawingContext.Provider>
   )

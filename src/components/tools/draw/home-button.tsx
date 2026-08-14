@@ -4,6 +4,7 @@ import { LayoutGrid } from "lucide-react"
 import Link from "next/link"
 import type { FunctionComponent } from "react"
 import { DefaultMenuPanel } from "tldraw"
+import AwsIconPicker from "@/components/tools/draw/aws-icon-picker"
 
 /**
  * Rendered into tldraw's `MenuPanel` zone (top-left).
@@ -27,6 +28,8 @@ const HomeButton: FunctionComponent = () => (
     </Link>
 
     <DefaultMenuPanel/>
+
+    <AwsIconPicker/>
   </div>
 )
 

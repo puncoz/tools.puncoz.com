@@ -11,6 +11,7 @@
         "@vercel/speed-insights": "^2.0.0",
         "@workos-inc/authkit-nextjs": "^4.3.1",
         "@workos-inc/node": "^10.9.0",
+        "aws-icons": "^3.3.0",
         "clsx": "^2.1.1",
         "drizzle-orm": "^0.45.2",
         "lucide-react": "^1.31.0",
@@ -735,6 +736,8 @@
     "async-function": ["async-function@1.0.0", "", {}, "sha512-hsU18Ae8CDTR6Kgu9DYf0EbCr/a5iGL0rytQDobUcdpYOKokk8LEjVphnXkDkgpi0wYVsqrXuP0bZxJaTqdgoA=="],
 
     "available-typed-arrays": ["available-typed-arrays@1.0.7", "", { "dependencies": { "possible-typed-array-names": "^1.0.0" } }, "sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ=="],
+
+    "aws-icons": ["aws-icons@3.3.0", "", {}, "sha512-/ukOBw3a0n5cWRLJA75mC2WH/SttpLDfOCe1rgzfTfKaB13PTZp525sp7QDXW2tSH4AIggHzNdk8M8X+YfGKNQ=="],
 
     "axe-core": ["axe-core@4.13.0", "", {}, "sha512-UzGt8zg7Ny8djbYMhxl2zuEevVa7r2gJjYY5Lwr1xM7+XU2nd6CkIWFTVcCIbAP63vSz71NaVyyuSk9lHKcy0A=="],
 

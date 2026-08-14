@@ -11,6 +11,7 @@ import {
   type TLComponents,
 } from "tldraw"
 import { createSharedAssetStore } from "@/components/tools/draw/shared-asset-store"
+import { customShapeUtils } from "@/components/tools/draw/shapes"
 import "tldraw/tldraw.css"
 
 /**
@@ -52,7 +53,9 @@ type Props = Readonly<{
 const SharedCanvas: FunctionComponent<Props> = ({ token, document }) => {
   const [store] = useState(() => {
     const created = createTLStore({
-      shapeUtils: defaultShapeUtils,
+      // Must match `draw-canvas.tsx` — see the note in `shapes/index.ts`. If this
+      // drifts, shared diagrams containing AWS icons fail to load for visitors.
+      shapeUtils: [...defaultShapeUtils, ...customShapeUtils],
       bindingUtils: defaultBindingUtils,
       assets: createSharedAssetStore(token),
     })
@@ -73,7 +76,12 @@ const SharedCanvas: FunctionComponent<Props> = ({ token, document }) => {
 
   return (
     <div className="fixed inset-0">
-      <Tldraw store={store} components={components} onMount={onMount}/>
+      <Tldraw
+        store={store}
+        shapeUtils={customShapeUtils}
+        components={components}
+        onMount={onMount}
+      />
     </div>
   )
 }
