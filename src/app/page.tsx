@@ -1,9 +1,11 @@
+import AccessNotice from "@/components/account/access-notice"
 import UserMenu from "@/components/auth/user-menu"
 import ImportLegacyDrawings from "@/components/tools/import-legacy-drawings"
 import ToolCredits from "@/components/tools/tool-credits"
 import ToolDirectory from "@/components/tools/tool-directory"
 import { clientConfig } from "@/config/client"
-import { getCurrentUser } from "@/lib/auth/session"
+import { canUseTools } from "@/lib/auth/access"
+import { getAccountUser } from "@/lib/auth/current-user"
 
 type Props = {
   searchParams: Promise<{ error?: string }>
@@ -14,7 +16,9 @@ export const dynamic = "force-dynamic"
 
 const HomePage = async ({ searchParams }: Props) => {
   const { error } = await searchParams
-  const user = await getCurrentUser()
+  // The landing page is the one signed-in surface that renders for unapproved
+  // users, so it reads the account row rather than the approved-only helper.
+  const user = await getAccountUser()
 
   return (
     <div className="min-h-screen">
@@ -42,8 +46,10 @@ const HomePage = async ({ searchParams }: Props) => {
         </p>
 
         <div className="mt-8 sm:mt-10">
-          {/* Importing writes to the account, so it is only offered once signed in. */}
-          {user && <ImportLegacyDrawings/>}
+          {user && <AccessNotice status={user.accessStatus}/>}
+
+          {/* Importing writes drawings, so it needs an account that may own them. */}
+          {user && canUseTools(user) && <ImportLegacyDrawings/>}
 
           <ToolDirectory/>
         </div>

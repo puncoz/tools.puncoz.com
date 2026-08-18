@@ -57,6 +57,13 @@
       "when": 1786670720410,
       "tag": "0007_add_drawing_share",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1786819320821,
+      "tag": "0008_add_user_access",
+      "breakpoints": true
     }
   ]
 }

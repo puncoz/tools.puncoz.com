@@ -18,6 +18,23 @@ const serverConfig = {
     },
   },
 
+  access: {
+    /**
+     * Who may review other users, by email.
+     *
+     * Deliberately environment rather than a database column: admin cannot then
+     * be granted by writing a row, which removes the escalation path a boolean
+     * flag would create. Required, so a misconfiguration fails at boot instead
+     * of silently leaving nobody able to approve anyone.
+     */
+    get adminEmails(): string[] {
+      return requireEnv("ADMIN_EMAILS")
+        .split(",")
+        .map(email => email.trim().toLowerCase())
+        .filter(Boolean)
+    },
+  },
+
   workos: {
     get apiKey(): string {
       return requireEnv("WORKOS_API_KEY")

@@ -1,5 +1,5 @@
 import React from "react"
-import { requireAuth } from "@/lib/auth/session"
+import { requireDbUser } from "@/lib/auth/current-user"
 
 type Props = Readonly<{
   children: React.ReactNode
@@ -10,12 +10,14 @@ type Props = Readonly<{
 export const dynamic = "force-dynamic"
 
 /**
- * Every tool lives under this route group and inherits authentication. This
- * check is defense-in-depth — the page-level `requireAuth()` is the real
- * guarantee, because layouts do not re-run on client-side navigation.
+ * Every tool lives under this route group and inherits both authentication and
+ * approval. This is defence in depth — the page-level `requireDbUser()` is the
+ * real guarantee, because layouts do not re-run on client-side navigation, and
+ * the API routes are guarded independently at the choke point in
+ * `lib/auth/current-user.ts`.
  */
 const ToolsLayout = async ({ children }: Props) => {
-  await requireAuth()
+  await requireDbUser()
 
   return <>{children}</>
 }

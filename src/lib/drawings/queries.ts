@@ -1,7 +1,7 @@
 import "server-only"
-import { and, desc, eq, isNotNull, sql } from "drizzle-orm"
+import { and, desc, eq, isNotNull, ne, sql } from "drizzle-orm"
 import { getDb } from "@/db"
-import { type DbDrawing, drawings } from "@/db/schema"
+import { type DbDrawing, drawings, users } from "@/db/schema"
 import { createShareToken } from "@/lib/drawings/share"
 
 /**
@@ -98,6 +98,12 @@ const getDrawing = async (
  *
  * Returns the document but never the thumbnail — the public page renders the
  * canvas, not a preview.
+ *
+ * Banned owners are excluded. Ban is the punitive status and should actually
+ * take content offline, rather than leaving it served from this domain
+ * indefinitely. Declined and pending owners keep their links: declined means
+ * "not admitted", which is no reason to break links already handed out, and a
+ * pending user never had tool access to create one.
  */
 const getDrawingByShareToken = async (
   token: string,
@@ -105,7 +111,12 @@ const getDrawingByShareToken = async (
   const [row] = await getDb()
     .select(withDocumentColumns)
     .from(drawings)
-    .where(and(eq(drawings.shareToken, token), isNotNull(drawings.shareToken)))
+    .innerJoin(users, eq(users.id, drawings.userId))
+    .where(and(
+      eq(drawings.shareToken, token),
+      isNotNull(drawings.shareToken),
+      ne(users.accessStatus, "banned"),
+    ))
     .limit(1)
 
   return row

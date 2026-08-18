@@ -18,6 +18,10 @@ const REQUIRED_ENV_VARS = [
   "WORKOS_COOKIE_PASSWORD",
   "NEXT_PUBLIC_WORKOS_REDIRECT_URI",
   "DATABASE_URL",
+  // Without this nobody is an admin, so no pending user could ever be approved
+  // and the site would be permanently closed. Failing at boot is far kinder than
+  // discovering that from a locked-out account.
+  "ADMIN_EMAILS",
 ] as const
 
 const requireEnv = (name: string): string => {
