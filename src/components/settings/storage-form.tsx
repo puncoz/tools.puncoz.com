@@ -2,6 +2,7 @@
 
 import { AlertTriangle, Check, Loader2, Trash2 } from "lucide-react"
 import { type FunctionComponent, useState } from "react"
+import { inputClasses } from "@/components/ui/input"
 import { PROVIDERS, STORAGE_PROVIDERS, type StorageProvider } from "@/lib/storage/providers"
 import { withProgress } from "@/lib/ui/progress"
 import { cn } from "@/lib/utils"
@@ -25,7 +26,7 @@ type Status =
   | { kind: "saved" }
   | { kind: "error", message: string }
 
-const inputClasses = "w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+const fieldClasses = inputClasses()
 
 const labelClasses = "block text-sm font-medium"
 
@@ -126,7 +127,7 @@ const StorageForm: FunctionComponent<Props> = ({ initial }) => {
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="space-y-1.5">
           <span className={labelClasses}>Bucket</span>
-          <input required value={bucket} onChange={e => setBucket(e.target.value)} className={inputClasses}/>
+          <input required value={bucket} onChange={e => setBucket(e.target.value)} className={fieldClasses}/>
         </label>
 
         <label className="space-y-1.5">
@@ -136,7 +137,7 @@ const StorageForm: FunctionComponent<Props> = ({ initial }) => {
             value={region}
             onChange={e => setRegion(e.target.value)}
             placeholder={info.regionPlaceholder}
-            className={inputClasses}
+            className={fieldClasses}
           />
         </label>
       </div>
@@ -149,7 +150,7 @@ const StorageForm: FunctionComponent<Props> = ({ initial }) => {
           value={endpoint}
           onChange={e => setEndpoint(e.target.value)}
           placeholder={info.endpointPlaceholder}
-          className={inputClasses}
+          className={fieldClasses}
         />
       </label>
 
@@ -162,7 +163,7 @@ const StorageForm: FunctionComponent<Props> = ({ initial }) => {
             onChange={e => setAccessKeyId(e.target.value)}
             autoComplete="off"
             placeholder={configured ? `Saved (${initial?.accessKeyIdMasked ?? "••••"}) — re-enter to change` : ""}
-            className={inputClasses}
+            className={fieldClasses}
           />
         </label>
 
@@ -175,7 +176,7 @@ const StorageForm: FunctionComponent<Props> = ({ initial }) => {
             onChange={e => setSecretAccessKey(e.target.value)}
             autoComplete="off"
             placeholder={configured ? "Saved — re-enter to change" : ""}
-            className={inputClasses}
+            className={fieldClasses}
           />
         </label>
       </div>
@@ -188,7 +189,7 @@ const StorageForm: FunctionComponent<Props> = ({ initial }) => {
           value={publicBaseUrl}
           onChange={e => setPublicBaseUrl(e.target.value)}
           placeholder={info.publicBaseUrlPlaceholder}
-          className={inputClasses}
+          className={fieldClasses}
         />
         <span className="block text-sm text-muted-foreground">
           Set this only if the bucket is public. Left blank, the bucket stays private and a

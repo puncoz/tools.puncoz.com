@@ -26,6 +26,15 @@ const clientConfig = {
      * policy, so this must stay an address that actually receives mail.
      */
     contactEmail: "info@puncoz.com",
+    /**
+     * Canonical origin, used as `metadataBase` so Open Graph and icon URLs
+     * resolve absolutely. Hardcoded rather than read from the environment: a
+     * preview deployment advertising itself as canonical is worse than one
+     * pointing at production.
+     */
+    url: "https://tools.puncoz.com",
+    /** The logo blue. Also the browser/OS theme colour — see `layout.tsx`. */
+    brandColor: "#567F95",
   },
 
   workos: {

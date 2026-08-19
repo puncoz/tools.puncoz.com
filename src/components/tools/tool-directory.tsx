@@ -3,6 +3,7 @@
 import { Search, X } from "lucide-react"
 import { type FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 import ToolCard from "@/components/tools/tool-card"
+import { inputClasses } from "@/components/ui/input"
 import { CATEGORY_LABELS, TOOLS, matchesQuery, usedCategories, type ToolCategory } from "@/lib/tools"
 import { cn } from "@/lib/utils"
 
@@ -67,7 +68,7 @@ const ToolDirectory: FunctionComponent = () => {
           value={query}
           onChange={event => setQuery(event.target.value)}
           placeholder="Search tools..."
-          className="w-full rounded-lg border border-border bg-card py-2.5 pl-9 pr-16 text-sm text-card-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className={inputClasses("bg-card py-2.5 pl-9 pr-16")}
         />
 
         {query.length === 0 && (
@@ -135,7 +136,7 @@ const ToolDirectory: FunctionComponent = () => {
             <button
               type="button"
               onClick={clear}
-              className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+              className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-brand underline-offset-4 hover:underline"
             >
               <X className="size-3.5" aria-hidden="true"/>
               Clear search

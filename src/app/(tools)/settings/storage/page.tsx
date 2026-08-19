@@ -1,6 +1,5 @@
-import { ArrowLeft } from "lucide-react"
-import Link from "next/link"
 import StorageForm from "@/components/settings/storage-form"
+import PageHeader from "@/components/ui/page-header"
 import { requireDbUser } from "@/lib/auth/current-user"
 import { getStorageSettings } from "@/lib/storage/queries"
 
@@ -10,17 +9,7 @@ const StorageSettingsPage = async () => {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-3xl items-center gap-3 px-6 py-4">
-          <Link
-            href="/"
-            className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="size-4" aria-hidden="true"/>
-            Tools
-          </Link>
-        </div>
-      </header>
+      <PageHeader width="narrow" section="Settings · Storage"/>
 
       <main className="mx-auto max-w-3xl px-6 py-12">
         <h1 className="text-2xl font-semibold tracking-tight">Object storage</h1>

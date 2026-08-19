@@ -3,6 +3,7 @@
 import { Loader2, UserPlus } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { type FunctionComponent, useState } from "react"
+import { inputClasses } from "@/components/ui/input"
 import { withProgress } from "@/lib/ui/progress"
 
 /**
@@ -69,7 +70,7 @@ const InviteUserForm: FunctionComponent = () => {
           value={email}
           onChange={event => setEmail(event.target.value)}
           placeholder="name@example.com"
-          className="w-64 rounded-lg border border-border bg-card px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className={inputClasses("w-64 bg-card")}
         />
 
         {error && <p className="mt-1.5 max-w-64 text-xs text-destructive">{error}</p>}

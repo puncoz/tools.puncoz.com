@@ -1,9 +1,8 @@
 import { Clock, ShieldBan, ShieldX } from "lucide-react"
-import Link from "next/link"
 import { redirect } from "next/navigation"
 import UserMenu from "@/components/auth/user-menu"
 import ReapplyForm from "@/components/account/reapply-form"
-import { clientConfig } from "@/config/client"
+import PageHeader from "@/components/ui/page-header"
 import { canUseTools, reapplyAvailableAt } from "@/lib/auth/access"
 // One of only three places allowed to reach a non-approved user — this page
 // exists precisely to explain to them why they are not approved.
@@ -31,13 +30,9 @@ const AccountPage = async () => {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-sm font-semibold">{clientConfig.app.shortName}</Link>
-
-          <UserMenu/>
-        </div>
-      </header>
+      <PageHeader width="narrow" section="Account">
+        <UserMenu/>
+      </PageHeader>
 
       <main className="mx-auto max-w-3xl px-6 py-16">
         {user.accessStatus === "pending" && (

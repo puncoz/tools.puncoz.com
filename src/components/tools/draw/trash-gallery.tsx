@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { type FunctionComponent, useState } from "react"
 import DrawingPreview from "@/components/tools/draw/drawing-preview"
+import { buttonClasses } from "@/components/ui/button"
 import { withProgress } from "@/lib/ui/progress"
 import { cn } from "@/lib/utils"
 
@@ -19,7 +20,9 @@ type TrashedDrawing = {
 
 type Props = Readonly<{ drawings: TrashedDrawing[] }>
 
-const buttonClasses = "inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium transition-colors hover:bg-accent disabled:opacity-50"
+const actionClasses = buttonClasses({ size: "sm" })
+
+const dangerClasses = buttonClasses({ variant: "destructive", size: "sm" })
 
 /**
  * The trash.
@@ -115,7 +118,7 @@ const TrashGallery: FunctionComponent<Props> = ({ drawings }) => {
                 type="button"
                 disabled={emptying}
                 onClick={() => void empty()}
-                className={cn(buttonClasses, "border-destructive/40 text-destructive hover:bg-destructive/10")}
+                className={dangerClasses}
               >
                 Yes, delete
               </button>
@@ -123,7 +126,7 @@ const TrashGallery: FunctionComponent<Props> = ({ drawings }) => {
               <button
                 type="button"
                 onClick={() => setConfirmingEmpty(false)}
-                className={buttonClasses}
+                className={actionClasses}
               >
                 Cancel
               </button>
@@ -134,7 +137,7 @@ const TrashGallery: FunctionComponent<Props> = ({ drawings }) => {
               type="button"
               disabled={emptying}
               onClick={() => setConfirmingEmpty(true)}
-              className={cn(buttonClasses, "text-destructive hover:bg-destructive/10")}
+              className={dangerClasses}
             >
               <Trash2 className="size-3.5" aria-hidden="true"/>
               Empty trash
@@ -179,7 +182,7 @@ const TrashGallery: FunctionComponent<Props> = ({ drawings }) => {
                           type="button"
                           disabled={busyId === drawing.id}
                           onClick={() => void purge(drawing.id)}
-                          className={cn(buttonClasses, "border-destructive/40 text-destructive hover:bg-destructive/10")}
+                          className={dangerClasses}
                         >
                           Yes, delete
                         </button>
@@ -187,7 +190,7 @@ const TrashGallery: FunctionComponent<Props> = ({ drawings }) => {
                         <button
                           type="button"
                           onClick={() => setConfirmingId(null)}
-                          className={buttonClasses}
+                          className={actionClasses}
                         >
                           Cancel
                         </button>
@@ -200,7 +203,7 @@ const TrashGallery: FunctionComponent<Props> = ({ drawings }) => {
                         type="button"
                         disabled={busyId === drawing.id}
                         onClick={() => void restore(drawing.id)}
-                        className={buttonClasses}
+                        className={actionClasses}
                       >
                         <RotateCcw className="size-3.5" aria-hidden="true"/>
                         Restore
@@ -210,7 +213,7 @@ const TrashGallery: FunctionComponent<Props> = ({ drawings }) => {
                         type="button"
                         disabled={busyId === drawing.id}
                         onClick={() => setConfirmingId(drawing.id)}
-                        className={cn(buttonClasses, "text-destructive hover:bg-destructive/10")}
+                        className={dangerClasses}
                       >
                         <Trash2 className="size-3.5" aria-hidden="true"/>
                         Delete forever

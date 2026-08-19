@@ -112,6 +112,24 @@ restored. Nothing removes a row except an explicit "delete forever" or "empty
 trash" — those two are the only destructive paths, and both refuse to touch a
 drawing that is not already in the trash.
 
+**The palette is two blues, not one.** `--brand` is the logo colour `#567F95`
+exactly, used where nothing is written on top of it — rings, hover borders, icon
+tiles, links, active tabs. White text on it measures 4.32:1, short of WCAG AA for
+body-size text, so filled buttons use `--primary`, the same hue darkened to
+5.8:1. They read as one colour; only the contrast differs.
+
+**Dark mode is class-based, not `prefers-color-scheme`.** A media query cannot be
+overridden, and the header offers light/dark/**system**. An inline script in
+`src/app/layout.tsx` puts the class on `<html>` before first paint — hence
+`suppressHydrationWarning` — and `use-canvas-theme.ts` mirrors it into tldraw,
+which keeps its own theme and would otherwise stay white inside a dark shell.
+
+**Brand assets are derived, and the script is manual.**
+`scripts/build-brand-assets.ts` crops the wordmarks to their ink and writes the
+favicons. Its outputs are committed and it is deliberately not part of
+`bun run build`: it depends on `sharp`, which is only a transitive dependency of
+Next's image optimiser.
+
 **AWS icons are generated, not committed.** `scripts/build-aws-icons.ts` copies
 299 service icons out of the `aws-icons` dependency into a gitignored
 `public/aws-icons/`. The artwork is AWS's — permitted for drawing architecture

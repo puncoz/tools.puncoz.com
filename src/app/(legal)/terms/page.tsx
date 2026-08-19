@@ -12,7 +12,8 @@ import { clientConfig } from "@/config/client"
 const LAST_UPDATED = "19 August 2026"
 
 export const metadata: Metadata = {
-  title: `Terms — ${clientConfig.app.name}`,
+  // The wordmark is appended by the root layout's title template.
+  title: "Terms",
   description: "The terms for using this site: what it is, what is expected of you, and what is not promised.",
 }
 

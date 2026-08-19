@@ -12,7 +12,8 @@ import { clientConfig } from "@/config/client"
 const LAST_UPDATED = "19 August 2026"
 
 export const metadata: Metadata = {
-  title: `Privacy — ${clientConfig.app.name}`,
+  // The wordmark is appended by the root layout's title template.
+  title: "Privacy",
   description: "What this site stores, who else can see it, and how to get it back or deleted.",
 }
 

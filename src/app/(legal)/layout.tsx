@@ -1,7 +1,6 @@
-import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import React, { type FunctionComponent } from "react"
-import { clientConfig } from "@/config/client"
+import PageHeader from "@/components/ui/page-header"
 import { cn } from "@/lib/utils"
 
 type Props = Readonly<{
@@ -35,39 +34,26 @@ const prose = cn(
   "[&_p]:mt-4 [&_p]:text-sm [&_p]:leading-relaxed [&_p]:text-muted-foreground",
   "[&_ul]:mt-4 [&_ul]:space-y-2 [&_ul]:pl-5",
   "[&_li]:list-disc [&_li]:text-sm [&_li]:leading-relaxed [&_li]:text-muted-foreground",
-  "[&_a]:font-medium [&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4",
+  "[&_a]:font-medium [&_a]:text-brand [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-primary",
   "[&_strong]:font-medium [&_strong]:text-foreground",
 )
 
 const LegalLayout: FunctionComponent<Props> = ({ children }) => {
   return (
     <div className="min-h-screen">
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="size-4 text-muted-foreground" aria-hidden="true"/>
-            {clientConfig.app.shortName}
-          </Link>
-        </div>
-      </header>
+      <PageHeader width="narrow"/>
 
-      {/* A `<div>`, not a `<main>`: the root layout already wraps every page in
-          one, and nesting a second is invalid. The content is still a landmark
-          — each page's root element is an `<article>`. */}
-      <div className={cn("mx-auto max-w-3xl px-6 py-12 sm:py-16", prose)}>
+      <main className={cn("mx-auto max-w-3xl px-6 py-12 sm:py-16", prose)}>
         {children}
-      </div>
+      </main>
 
       <footer className="mx-auto max-w-3xl px-6 pb-12">
         <p className="border-t border-border pt-6 text-xs text-muted-foreground">
-          <Link href="/privacy" className="underline-offset-4 hover:underline">Privacy</Link>
+          <Link href="/privacy" className="underline-offset-4 hover:text-foreground hover:underline">Privacy</Link>
           {" · "}
-          <Link href="/terms" className="underline-offset-4 hover:underline">Terms</Link>
+          <Link href="/terms" className="underline-offset-4 hover:text-foreground hover:underline">Terms</Link>
           {" · "}
-          <Link href="/" className="underline-offset-4 hover:underline">All tools</Link>
+          <Link href="/" className="underline-offset-4 hover:text-foreground hover:underline">All tools</Link>
         </p>
       </footer>
     </div>

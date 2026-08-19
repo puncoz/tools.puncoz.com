@@ -4,6 +4,7 @@ import { FilePlus2, Search, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { type FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 import DrawingCard, { type GalleryDrawing } from "@/components/tools/draw/drawing-card"
+import { inputClasses } from "@/components/ui/input"
 import { startNavigation, withProgress } from "@/lib/ui/progress"
 import { cn } from "@/lib/utils"
 
@@ -124,7 +125,7 @@ const DrawingGallery: FunctionComponent<Props> = ({ drawings }) => {
             value={query}
             onChange={event => setQuery(event.target.value)}
             placeholder="Search drawings..."
-            className="w-full rounded-lg border border-border bg-card py-2.5 pl-9 pr-16 text-sm text-card-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className={inputClasses("bg-card py-2.5 pl-9 pr-16")}
           />
 
           {query.length === 0 && (
@@ -145,7 +146,7 @@ const DrawingGallery: FunctionComponent<Props> = ({ drawings }) => {
                 className={cn(
                   "rounded-md px-3 py-1.5 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   sort === option.value
-                    ? "bg-accent text-accent-foreground"
+                    ? "bg-brand-subtle text-brand"
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
@@ -184,7 +185,7 @@ const DrawingGallery: FunctionComponent<Props> = ({ drawings }) => {
                 setQuery("")
                 searchRef.current?.focus()
               }}
-              className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-foreground underline-offset-4 hover:underline"
+              className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-brand underline-offset-4 hover:underline"
             >
               <X className="size-3.5" aria-hidden="true"/>
               Clear search

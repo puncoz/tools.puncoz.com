@@ -5,6 +5,7 @@ import { LogOut, Settings } from "lucide-react"
 import Link from "next/link"
 import type { FunctionComponent } from "react"
 import { DROPDOWN_CLASSES, PANEL_CLASSES, useDismissableMenu } from "@/components/tools/draw/floating-menu"
+import ThemeToggle from "@/components/ui/theme-toggle"
 import { cn } from "@/lib/utils"
 
 const initialFor = (name: string | null, email: string): string =>
@@ -44,6 +45,17 @@ const UserBadge: FunctionComponent = () => {
       {open && (
         <div role="menu" className={cn(DROPDOWN_CLASSES, "right-0 w-56")}>
           <p className="truncate px-3 py-2 text-xs text-muted-foreground">{user.email}</p>
+
+          <div className="my-1 h-px bg-border"/>
+
+          {/* The canvas is full-bleed, so the header that normally carries this
+              is not on screen. Without it the theme is unreachable from the one
+              page where the difference is most obvious. */}
+          <div className="flex items-center justify-between gap-2 px-3 py-2">
+            <span className="text-sm">Theme</span>
+
+            <ThemeToggle/>
+          </div>
 
           <div className="my-1 h-px bg-border"/>
 

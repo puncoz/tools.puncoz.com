@@ -12,6 +12,7 @@ import {
 } from "tldraw"
 import { createSharedAssetStore } from "@/components/tools/draw/shared-asset-store"
 import { customShapeUtils } from "@/components/tools/draw/shapes"
+import { useCanvasTheme } from "@/components/tools/draw/use-canvas-theme"
 import { clientConfig } from "@/config/client"
 import "tldraw/tldraw.css"
 
@@ -68,11 +69,17 @@ const SharedCanvas: FunctionComponent<Props> = ({ token, document }) => {
     return created
   })
 
-  const onMount = (editor: Editor) => {
-    editor.updateInstanceState({ isReadonly: true })
+  // Held only so the theme hook can reach the editor; nothing here reads it.
+  const [editor, setEditor] = useState<Editor | null>(null)
+
+  useCanvasTheme(editor)
+
+  const onMount = (mounted: Editor) => {
+    mounted.updateInstanceState({ isReadonly: true })
     // Imported and shared drawings often sit well outside the default viewport,
     // so a visitor would otherwise open to empty canvas.
-    editor.zoomToFit({ animation: { duration: 0 } })
+    mounted.zoomToFit({ animation: { duration: 0 } })
+    setEditor(mounted)
   }
 
   return (

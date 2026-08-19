@@ -3,6 +3,7 @@
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { type FunctionComponent, useState } from "react"
+import { inputClasses } from "@/components/ui/input"
 import { withProgress } from "@/lib/ui/progress"
 
 type Props = Readonly<{
@@ -84,7 +85,7 @@ const ReapplyForm: FunctionComponent<Props> = ({ availableAtLabel }) => {
         value={message}
         onChange={event => setMessage(event.target.value)}
         maxLength={1000}
-        className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className={inputClasses("mt-2")}
       />
 
       {error && <p className="mt-2 text-sm text-destructive">{error}</p>}

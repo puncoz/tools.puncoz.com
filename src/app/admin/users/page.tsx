@@ -1,8 +1,7 @@
-import { ArrowLeft } from "lucide-react"
-import Link from "next/link"
 import UserMenu from "@/components/auth/user-menu"
 import InviteUserForm from "@/components/admin/invite-user-form"
 import UserRowActions from "@/components/admin/user-row-actions"
+import PageHeader from "@/components/ui/page-header"
 import type { AccessStatus, DbUser } from "@/db/schema"
 import { ACCESS_STATUS_LABELS } from "@/lib/auth/access"
 // Reviewing people necessarily means loading people who are not approved, which
@@ -46,19 +45,9 @@ const AdminUsersPage = async () => {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="size-4" aria-hidden="true"/>
-            All tools
-          </Link>
-
-          <UserMenu/>
-        </div>
-      </header>
+      <PageHeader width="full" section="People">
+        <UserMenu/>
+      </PageHeader>
 
       <main className="mx-auto max-w-6xl px-6 py-10">
         <div className="flex flex-wrap items-end justify-between gap-4">

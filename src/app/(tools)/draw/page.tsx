@@ -1,8 +1,8 @@
-import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import UserMenu from "@/components/auth/user-menu"
 import DrawingGallery from "@/components/tools/draw/drawing-gallery"
 import TrashGallery from "@/components/tools/draw/trash-gallery"
+import PageHeader from "@/components/ui/page-header"
 import { requireDbUser } from "@/lib/auth/current-user"
 import { countTrashedDrawings, listDrawings, listTrashedDrawings } from "@/lib/drawings/queries"
 import { relativeTime } from "@/lib/ui/relative-time"
@@ -39,19 +39,9 @@ const DrawIndexPage = async ({ searchParams }: Props) => {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="size-4" aria-hidden="true"/>
-            All tools
-          </Link>
-
-          <UserMenu/>
-        </div>
-      </header>
+      <PageHeader width="full" section={showTrash ? "Draw · Trash" : "Draw"}>
+        <UserMenu/>
+      </PageHeader>
 
       <main className="mx-auto max-w-6xl px-6 py-10 sm:py-14">
         <div className="flex flex-wrap items-start justify-between gap-4">
@@ -78,7 +68,7 @@ const DrawIndexPage = async ({ searchParams }: Props) => {
                 aria-current={showTrash ? undefined : "page"}
                 className={cn(
                   tabClasses,
-                  showTrash ? "text-muted-foreground hover:text-foreground" : "bg-accent text-accent-foreground",
+                  showTrash ? "text-muted-foreground hover:text-foreground" : "bg-brand-subtle text-brand",
                 )}
               >
                 Drawings
@@ -89,7 +79,7 @@ const DrawIndexPage = async ({ searchParams }: Props) => {
                 aria-current={showTrash ? "page" : undefined}
                 className={cn(
                   tabClasses,
-                  showTrash ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground",
+                  showTrash ? "bg-brand-subtle text-brand" : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 Trash {trashedCount > 0 && `(${trashedCount})`}

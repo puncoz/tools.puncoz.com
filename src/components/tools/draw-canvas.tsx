@@ -18,6 +18,7 @@ import HomeButton from "@/components/tools/draw/home-button"
 import ProjectMenu from "@/components/tools/draw/project-menu"
 import SharePanel from "@/components/tools/draw/share-panel"
 import { useAutosave } from "@/components/tools/draw/use-autosave"
+import { useCanvasTheme } from "@/components/tools/draw/use-canvas-theme"
 import { useThumbnail } from "@/components/tools/draw/use-thumbnail"
 import "tldraw/tldraw.css"
 
@@ -73,6 +74,8 @@ const DrawCanvas: FunctionComponent<Props> = ({ drawing }) => {
   const [editor, setEditor] = useState<Editor | null>(null)
 
   const saveState = useAutosave(store, drawing.id)
+
+  useCanvasTheme(editor)
 
   useThumbnail(editor, store, drawing.id, drawing.hasThumbnail)
 
