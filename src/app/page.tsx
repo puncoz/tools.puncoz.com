@@ -1,4 +1,5 @@
 import AccessNotice from "@/components/account/access-notice"
+import StructuredData from "@/components/seo/structured-data"
 import ImportLegacyDrawings from "@/components/tools/import-legacy-drawings"
 import ToolDirectory from "@/components/tools/tool-directory"
 import PageShell from "@/components/ui/page-shell"
@@ -21,6 +22,8 @@ const HomePage = async ({ searchParams }: Props) => {
 
   return (
     <PageShell>
+      <StructuredData/>
+
       {error === "auth" && (
         <p className="mb-8 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
           Something went wrong signing you in. Please try again.

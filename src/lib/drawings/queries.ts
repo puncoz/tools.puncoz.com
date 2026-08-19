@@ -179,6 +179,37 @@ const getDrawingByShareToken = async (
 }
 
 /**
+ * Title and preview for a shared drawing, for the social card.
+ *
+ * Shares `getDrawingByShareToken`'s WHERE clause exactly, and that is the whole
+ * point of it being its own query rather than a looser one: a trashed drawing or
+ * a banned owner has to disappear from the preview at the same instant it
+ * disappears from the page. A card that keeps rendering a drawing whose link is
+ * dead would leak precisely what revoking was meant to stop.
+ *
+ * Loads only the light variant. The card is composed on the brand colour and is
+ * seen in whatever theme the reader's chat client happens to use, which is not
+ * something a server can know — so there is one card, and it is the light one.
+ */
+const getShareThumbnail = async (
+  token: string,
+): Promise<Pick<DbDrawing, "title" | "thumbnail"> | undefined> => {
+  const [row] = await getDb()
+    .select({ title: drawings.title, thumbnail: drawings.thumbnail })
+    .from(drawings)
+    .innerJoin(users, eq(users.id, drawings.userId))
+    .where(and(
+      eq(drawings.shareToken, token),
+      isNotNull(drawings.shareToken),
+      isNull(drawings.deletedAt),
+      ne(users.accessStatus, "banned"),
+    ))
+    .limit(1)
+
+  return row
+}
+
+/**
  * Only the thumbnail columns, so the serving route never loads the document.
  *
  * The one owner-scoped read that does NOT exclude trashed drawings, because the
@@ -463,6 +494,7 @@ export {
   getDrawing,
   getDrawingByShareToken,
   getShareState,
+  getShareThumbnail,
   getThumbnail,
   listDrawings,
   listTrashedDrawings,

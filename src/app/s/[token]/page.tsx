@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import SharedCanvas from "@/components/tools/draw/shared-canvas"
-import { getDrawingByShareToken } from "@/lib/drawings/queries"
+import { clientConfig } from "@/config/client"
+import { getDrawingByShareToken, getShareThumbnail } from "@/lib/drawings/queries"
 import { isShareTokenShaped } from "@/lib/drawings/share"
 
 type Props = {
@@ -9,12 +10,41 @@ type Props = {
 }
 
 /**
- * `noindex` even though `robots.ts` disallows `/s/` and `next.config.ts` sends an
+ * The drawing's own title, so a pasted link unfurls as something recognisable
+ * rather than as the bare site name. The card image beside it is built by
+ * `opengraph-image.tsx` in this folder; Next emits its tags automatically.
+ *
+ * `noindex` stays, and is not in tension with any of that. It is set here even
+ * though `robots.ts` disallows `/s/` and `next.config.ts` sends an
  * `X-Robots-Tag` — three independent layers, because a share link that reaches a
- * search index is not something a revoke can undo.
+ * search index is not something a revoke can undo. A chat client fetching an
+ * unfurl is a different crawler reading different signals, and previewing a link
+ * someone deliberately pasted is the point of having share links at all.
+ *
+ * An unknown or revoked token falls back to the site name. It must not say
+ * "not found": the title is served to anyone who pastes a URL, and a distinct
+ * one would turn unfurling into a way to test whether a token was ever real.
  */
-export const metadata: Metadata = {
-  robots: { index: false, follow: false },
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+  const { token } = await params
+
+  const drawing = isShareTokenShaped(token)
+    ? await getShareThumbnail(token)
+    : undefined
+
+  const title = drawing?.title ?? clientConfig.app.name
+
+  return {
+    title,
+    description: `A drawing shared from ${clientConfig.app.name}.`,
+    robots: { index: false, follow: false },
+    openGraph: {
+      title,
+      description: `A drawing shared from ${clientConfig.app.name}.`,
+      type: "article",
+    },
+    twitter: { card: "summary_large_image", title },
+  }
 }
 
 // Reads a live row and must reflect a revoke immediately.

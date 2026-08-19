@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import type { FunctionComponent } from "react"
+import ConsentChoice from "@/components/analytics/consent-choice"
 import PageShell from "@/components/ui/page-shell"
 import { prose } from "@/components/ui/prose"
 import { clientConfig } from "@/config/client"
@@ -17,10 +18,12 @@ export const metadata: Metadata = {
   // The wordmark is appended by the root layout's title template.
   title: "Privacy",
   description: "What this site stores, who else can see it, and how to get it back or deleted.",
+  alternates: { canonical: "/privacy" },
 }
 
 const PrivacyPage: FunctionComponent = () => {
   const email = clientConfig.app.contactEmail
+  const analyticsEnabled = clientConfig.analytics.googleAnalyticsId !== ""
 
   return (
     <PageShell crumbs={["Privacy"]}>
@@ -36,9 +39,10 @@ const PrivacyPage: FunctionComponent = () => {
 
         <p>
           This is a personal project, not a company. It stores the drawings you make and the
-          minimum needed to know who you are. Nothing is sold, nothing is shared with advertisers,
-          and there is no cross-site tracking. Your work is private to your account unless you
-          deliberately turn on a share link. If you want a copy of your data or want it gone,
+          minimum needed to know who you are. Nothing is sold and nothing is shared with
+          advertisers. It does use Google Analytics to count visits, and that stays switched off
+          unless you agree to it. Your work is private to your account unless you deliberately
+          turn on a share link. If you want a copy of your data or want it gone,
           email <a href={`mailto:${email}`}>{email}</a> and ask.
         </p>
 
@@ -111,14 +115,41 @@ const PrivacyPage: FunctionComponent = () => {
           build a profile of you.
         </p>
 
+        <p>
+          Google Analytics is used as well, and it is not cookieless — which is why it is off
+          until you say otherwise. It records the pages you visit, roughly where in the world you
+          are, your browser and device, and how quickly pages loaded. See <strong>Cookies</strong>
+          below for what is and is not stored before you answer.
+        </p>
+
         <h2>Cookies</h2>
 
         <p>
-          One cookie, holding your encrypted sign-in session. It exists so you stay signed in
-          between visits, and there is no way to offer accounts without it. There are no
-          advertising cookies, no analytics cookies and no third-party trackers, which is why the
-          site does not show a cookie banner.
+          <strong>Signing in</strong> uses one cookie, holding your encrypted session. It exists
+          so you stay signed in between visits, and there is no way to offer accounts without it.
+          It is not a tracking cookie and there is nothing to consent to.
         </p>
+
+        <p>
+          <strong>Google Analytics</strong> is the reason this site now asks. It is loaded with
+          Google&apos;s consent settings denied, so until you press Accept it stores nothing on
+          your device: Google is told a page was viewed, and nothing that identifies you or
+          follows you anywhere else. Accepting lets it set its usual cookies. Declining is
+          remembered, so the question is asked once rather than on every visit.
+        </p>
+
+        <p>
+          The advertising signals Google offers alongside this — ad storage, ad personalisation,
+          ad user data — are switched off in code and are not part of what accepting turns on.
+          Nothing here runs ads.
+        </p>
+
+        {/* Offering to manage a choice that has no effect is worse than staying
+            quiet, so this only appears where analytics actually runs. The two
+            paragraphs above are unconditional on purpose: they describe what the
+            deployed site does, and a policy that changes shape with the
+            environment is not one anybody can rely on. */}
+        {analyticsEnabled && <ConsentChoice/>}
 
         <h2>Who else has access</h2>
 
@@ -129,7 +160,11 @@ const PrivacyPage: FunctionComponent = () => {
         <ul>
           <li><strong>WorkOS</strong> — sign-in and identity. Holds your email, name and password.</li>
           <li><strong>Supabase</strong> — the Postgres database, so it holds everything described above.</li>
-          <li><strong>Vercel</strong> — hosting, server logs, and the aggregate analytics.</li>
+          <li><strong>Vercel</strong> — hosting, server logs, and the cookieless analytics.</li>
+          <li>
+            <strong>Google</strong> — Analytics, and only if you accept. It sees which pages you
+            visit and how they performed, never your drawings or what is in them.
+          </li>
           <li>
             <strong>Your own storage bucket</strong>, if you set one up — holds the images you
             upload. It is your account with that provider, under their terms, and you control it.
@@ -138,7 +173,8 @@ const PrivacyPage: FunctionComponent = () => {
 
         <p>
           The drawing canvas itself is tldraw, which runs entirely in your browser. It does not send
-          your drawings anywhere. Nobody else receives your data, and none of it is ever sold.
+          your drawings anywhere. Nothing you make here is ever sent to Google or to anyone else —
+          the analytics above sees pages, not content — and none of it is ever sold.
         </p>
 
         <h2>Sharing a drawing</h2>
@@ -150,6 +186,15 @@ const PrivacyPage: FunctionComponent = () => {
           next request. Moving a shared drawing to the trash makes its link stop working, and
           restoring it makes the same link work again; deleting a drawing is not a way to unshare
           it, the share controls are.
+        </p>
+
+        <p>
+          Pasting a share link into a chat app or a social network makes that service fetch a
+          preview image of the drawing, so the link shows what it points at rather than a bare
+          URL. Those services keep the picture on their own systems.{" "}
+          <strong>Revoking a link stops the page from loading, but it cannot reach into a
+          preview that has already been posted somewhere</strong> — treat sharing a link into a
+          public channel as publishing the picture, because that is what it is.
         </p>
 
         <h2>How long things are kept</h2>

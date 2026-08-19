@@ -40,4 +40,28 @@ await sharp(`${IMG}/logo-icon-light.png`)
   .flatten({ background: "#567F95" })
   .toFile(`${APP}/apple-icon.png`)
 
+/**
+ * The card a link to the site renders as, at Open Graph's 1200x630.
+ *
+ * Static rather than generated per request with `next/og`: the content never
+ * varies, and a runtime image route means font loading and an edge render on
+ * every crawl for a picture that is the same every time.
+ *
+ * The dark wordmark on the brand blue — the light one is white-on-blue already
+ * and would vanish into the background.
+ */
+const OG = { width: 1200, height: 630 }
+
+const wordmark = await sharp(`${IMG}/logo-dark.png`)
+  .trim({ threshold: 0 })
+  .resize({ width: Math.round(OG.width * 0.44) })
+  .toBuffer()
+
+await sharp({
+  create: { ...OG, channels: 4, background: "#567F95" },
+})
+  .composite([{ input: wordmark, gravity: "centre" }])
+  .png()
+  .toFile(`${APP}/opengraph-image.png`)
+
 console.log("brand assets: done")

@@ -4,6 +4,7 @@ import { AuthKitProvider } from "@workos-inc/authkit-nextjs/components"
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
 import React, { type FunctionComponent } from "react"
+import GoogleAnalytics from "@/components/analytics/google-analytics"
 import TopProgressBar from "@/components/ui/top-progress-bar"
 import { clientConfig } from "@/config/client"
 import { themeScript } from "@/lib/ui/theme"
@@ -26,6 +27,18 @@ export const metadata: Metadata = {
   },
   description: clientConfig.app.description,
   applicationName: clientConfig.app.name,
+  // Ownership proofs for the search consoles. Both are omitted entirely when
+  // unset, rather than emitted empty — an empty verification tag is a failed
+  // verification, not an absent one.
+  verification: {
+    ...(clientConfig.verification.google ? { google: clientConfig.verification.google } : {}),
+    ...(clientConfig.verification.bing
+      ? { other: { "msvalidate.01": clientConfig.verification.bing } }
+      : {}),
+  },
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     siteName: clientConfig.app.name,
@@ -76,8 +89,12 @@ const RootLayout: FunctionComponent<Props> = ({ children }) => {
       {children}
     </AuthKitProvider>
 
+    {/* Vercel's pair are cookieless and unconditional. Google Analytics
+      * renders nothing unless a measurement id is configured, and asks before
+      * it stores anything. */}
     <SpeedInsights/>
     <Analytics/>
+    <GoogleAnalytics/>
     </body>
     </html>
   )

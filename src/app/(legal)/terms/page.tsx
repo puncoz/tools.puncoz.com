@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   // The wordmark is appended by the root layout's title template.
   title: "Terms",
   description: "The terms for using this site: what it is, what is expected of you, and what is not promised.",
+  alternates: { canonical: "/terms" },
 }
 
 const TermsPage: FunctionComponent = () => {

@@ -131,9 +131,39 @@ which keeps its own theme and would otherwise stay white inside a dark shell.
 
 **Brand assets are derived, and the script is manual.**
 `scripts/build-brand-assets.ts` crops the wordmarks to their ink and writes the
-favicons. Its outputs are committed and it is deliberately not part of
-`bun run build`: it depends on `sharp`, which is only a transitive dependency of
-Next's image optimiser.
+favicons and the site's share image. Its outputs are committed and it is
+deliberately not part of `bun run build` — the inputs change roughly never, so
+running it on every deploy would be work in exchange for nothing.
+
+**A shared drawing unfurls as itself.** `/s/[token]/opengraph-image.tsx` composes
+the drawing's preview onto the brand colour at 1200×630, so a pasted link shows
+the drawing rather than a bare URL. It reuses `getDrawingByShareToken`'s exact
+WHERE clause, so a revoked, trashed or banned-owner drawing falls back to an
+anonymous card — and so does a malformed token, because an unfurl must not become
+a way to test whether a token was ever real. The page stays `noindex`: this makes
+links previewable in chat clients, not findable in search.
+
+`sharp` is a direct dependency for that one route. Previews are stored as WebP —
+a fifth the size of PNG, which matters on a route the AuthKit proxy makes
+uncacheable — and Satori, behind `next/og`, cannot decode WebP. So the card
+transcodes once per unfurl. It is pinned to `next`'s own range, since `next`
+already depends on it; a newer major would put a second copy in the bundle.
+
+**Analytics is opt-in, and absent when unconfigured.** Vercel Analytics and
+Speed Insights are cookieless and always on. Google Analytics runs only when
+`NEXT_PUBLIC_GA_MEASUREMENT_ID` is set — without it there is no script and no
+cookie banner at all, so local development and forks never touch the property.
+When it is set, an inline script establishes Consent Mode v2 defaults *before*
+gtag loads (advertising signals hardcoded denied, analytics denied unless
+previously accepted), and the banner's Accept fires a `consent update`. A
+returning visitor who already agreed gets `granted` as the default rather than a
+denied-then-granted flip, so the first pageview is not counted twice. The privacy
+policy describes exactly this — **if you change the consent behaviour, change the
+policy with it.**
+
+**Only three pages are indexable.** `sitemap.ts` lists `/`, `/privacy` and
+`/terms`; everything else needs a session or is disallowed in `robots.ts`.
+Listing a route a crawler gets redirected away from is worse than omitting it.
 
 **AWS icons are generated, not committed.** `scripts/build-aws-icons.ts` copies
 299 service icons out of the `aws-icons` dependency into a gitignored

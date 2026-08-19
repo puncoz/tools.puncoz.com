@@ -42,6 +42,29 @@ const clientConfig = {
     redirectUri: process.env.NEXT_PUBLIC_WORKOS_REDIRECT_URI ?? "",
   },
 
+  /**
+   * All optional, and all deliberately absent from `REQUIRED_ENV_VARS`: a
+   * checkout with none of these set must run normally, just unmeasured. Each is
+   * empty-string-when-unset rather than undefined so call sites can test truthiness
+   * without caring which.
+   */
+  analytics: {
+    /**
+     * GA4 measurement id, `G-XXXXXXXXXX`. Empty disables Google Analytics
+     * entirely — no script, no consent banner, nothing in the page.
+     *
+     * `NEXT_PUBLIC_` by necessity: gtag runs in the browser and the id is in
+     * every request it makes. It is not a secret, and cannot be one.
+     */
+    googleAnalyticsId: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? "",
+  },
+
+  /** Ownership proofs for the search consoles. Meta tags, so public by design. */
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ?? "",
+    bing: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ?? "",
+  },
+
   tldraw: {
     /**
      * Public by design, and the exception that proves the rule above.
