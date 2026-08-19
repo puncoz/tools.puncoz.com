@@ -1,5 +1,5 @@
 import StorageForm from "@/components/settings/storage-form"
-import PageHeader from "@/components/ui/page-header"
+import PageShell from "@/components/ui/page-shell"
 import { requireDbUser } from "@/lib/auth/current-user"
 import { getStorageSettings } from "@/lib/storage/queries"
 
@@ -8,10 +8,7 @@ const StorageSettingsPage = async () => {
   const settings = await getStorageSettings(user.id)
 
   return (
-    <div className="min-h-screen">
-      <PageHeader width="narrow" section="Settings · Storage"/>
-
-      <main className="mx-auto max-w-3xl px-6 py-12">
+    <PageShell crumbs={["Settings", "Storage"]}>
         <h1 className="text-2xl font-semibold tracking-tight">Object storage</h1>
 
         <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
@@ -32,8 +29,7 @@ const StorageSettingsPage = async () => {
             }}
           />
         </div>
-      </main>
-    </div>
+    </PageShell>
   )
 }
 

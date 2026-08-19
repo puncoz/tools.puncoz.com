@@ -2,7 +2,7 @@ import Link from "next/link"
 import UserMenu from "@/components/auth/user-menu"
 import DrawingGallery from "@/components/tools/draw/drawing-gallery"
 import TrashGallery from "@/components/tools/draw/trash-gallery"
-import PageHeader from "@/components/ui/page-header"
+import PageShell from "@/components/ui/page-shell"
 import { requireDbUser } from "@/lib/auth/current-user"
 import { countTrashedDrawings, listDrawings, listTrashedDrawings } from "@/lib/drawings/queries"
 import { relativeTime } from "@/lib/ui/relative-time"
@@ -38,12 +38,7 @@ const DrawIndexPage = async ({ searchParams }: Props) => {
   const trashedCount = showTrash ? trashed.length : await countTrashedDrawings(user.id)
 
   return (
-    <div className="min-h-screen">
-      <PageHeader width="full" section={showTrash ? "Draw · Trash" : "Draw"}>
-        <UserMenu/>
-      </PageHeader>
-
-      <main className="mx-auto max-w-6xl px-6 py-10 sm:py-14">
+    <PageShell crumbs={showTrash ? ["Draw", "Trash"] : ["Draw"]} actions={<UserMenu/>}>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
@@ -115,8 +110,7 @@ const DrawIndexPage = async ({ searchParams }: Props) => {
               />
             )}
         </div>
-      </main>
-    </div>
+    </PageShell>
   )
 }
 

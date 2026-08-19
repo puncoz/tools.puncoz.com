@@ -1,14 +1,19 @@
 import Image from "next/image"
 import Link from "next/link"
 import type { FunctionComponent } from "react"
-import mark from "@/assets/img/logo-icon-light.png"
 import wordmarkDark from "@/assets/img/wordmark-dark.png"
 import wordmark from "@/assets/img/wordmark.png"
 import { clientConfig } from "@/config/client"
 import { cn } from "@/lib/utils"
 
 /**
- * The brand lockup.
+ * The wordmark, and only the wordmark.
+ *
+ * It is the first crumb of the header's breadcrumb rather than a self-contained
+ * lockup, so it deliberately does not carry "/tools" — that belongs to the trail
+ * in `page-header.tsx`, where every separator is drawn the same way and spaced
+ * the same. Baking one slash in here and letting the header draw the rest gave
+ * two different treatments on one line.
  *
  * `wordmark.png` / `wordmark-dark.png` are `logo.png` / `logo-dark.png` with
  * their transparent padding cropped off — the originals carry roughly 250px of
@@ -18,10 +23,6 @@ import { cn } from "@/lib/utils"
  * Both variants are rendered and one is hidden by CSS rather than picking in
  * JavaScript: the theme class is on `<html>` before paint, so this swaps with no
  * hydration pass and no flash of the wrong logo.
- *
- * The icon uses the light asset in both themes on purpose. It is a filled brand
- * disc, which reads on white and on the dark slate alike; the dark variant is a
- * bare blue glyph that measures 2.6:1 on the dark background and disappears.
  */
 
 type Props = Readonly<{
@@ -31,12 +32,12 @@ type Props = Readonly<{
 }>
 
 const Wordmark: FunctionComponent<{ className?: string }> = ({ className }) => (
-  <span className={cn("inline-flex items-center gap-2", className)}>
+  <span className={cn("inline-flex items-center", className)}>
     <Image
       src={wordmark}
       alt={clientConfig.app.name}
       priority
-      className="h-8 w-auto dark:hidden"
+      className="h-7 w-auto dark:hidden"
     />
 
     <Image
@@ -44,10 +45,8 @@ const Wordmark: FunctionComponent<{ className?: string }> = ({ className }) => (
       alt=""
       aria-hidden="true"
       priority
-      className="hidden h-8 w-auto dark:block"
+      className="hidden h-7 w-auto dark:block"
     />
-
-    <span className="text-sm font-medium text-muted-foreground">/tools</span>
   </span>
 )
 
@@ -70,15 +69,4 @@ const Logo: FunctionComponent<Props> = ({ asLink = true, className }) => {
   )
 }
 
-/** Icon only, for the places a wordmark will not fit — canvas chrome, avatars. */
-const LogoMark: FunctionComponent<{ className?: string }> = ({ className }) => (
-  <Image
-    src={mark}
-    alt=""
-    aria-hidden="true"
-    className={cn("size-6 rounded-full", className)}
-  />
-)
-
 export default Logo
-export { LogoMark }

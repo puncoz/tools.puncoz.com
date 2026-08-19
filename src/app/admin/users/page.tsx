@@ -1,7 +1,7 @@
 import UserMenu from "@/components/auth/user-menu"
 import InviteUserForm from "@/components/admin/invite-user-form"
 import UserRowActions from "@/components/admin/user-row-actions"
-import PageHeader from "@/components/ui/page-header"
+import PageShell from "@/components/ui/page-shell"
 import type { AccessStatus, DbUser } from "@/db/schema"
 import { ACCESS_STATUS_LABELS } from "@/lib/auth/access"
 // Reviewing people necessarily means loading people who are not approved, which
@@ -44,12 +44,7 @@ const AdminUsersPage = async () => {
   const pendingCount = users.filter(user => user.accessStatus === "pending").length
 
   return (
-    <div className="min-h-screen">
-      <PageHeader width="full" section="People">
-        <UserMenu/>
-      </PageHeader>
-
-      <main className="mx-auto max-w-6xl px-6 py-10">
+    <PageShell crumbs={["People"]} actions={<UserMenu/>}>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">People</h1>
@@ -140,8 +135,7 @@ const AdminUsersPage = async () => {
             </tbody>
           </table>
         </div>
-      </main>
-    </div>
+    </PageShell>
   )
 }
 

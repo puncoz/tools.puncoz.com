@@ -2,7 +2,7 @@ import { Clock, ShieldBan, ShieldX } from "lucide-react"
 import { redirect } from "next/navigation"
 import UserMenu from "@/components/auth/user-menu"
 import ReapplyForm from "@/components/account/reapply-form"
-import PageHeader from "@/components/ui/page-header"
+import PageShell from "@/components/ui/page-shell"
 import { canUseTools, reapplyAvailableAt } from "@/lib/auth/access"
 // One of only three places allowed to reach a non-approved user — this page
 // exists precisely to explain to them why they are not approved.
@@ -29,12 +29,7 @@ const AccountPage = async () => {
   const availableAt = reapplyAvailableAt(user)
 
   return (
-    <div className="min-h-screen">
-      <PageHeader width="narrow" section="Account">
-        <UserMenu/>
-      </PageHeader>
-
-      <main className="mx-auto max-w-3xl px-6 py-16">
+    <PageShell crumbs={["Account"]} actions={<UserMenu/>}>
         {user.accessStatus === "pending" && (
           <>
             <Clock className="size-8 text-muted-foreground" aria-hidden="true"/>
@@ -99,8 +94,7 @@ const AccountPage = async () => {
             )}
           </>
         )}
-      </main>
-    </div>
+    </PageShell>
   )
 }
 
