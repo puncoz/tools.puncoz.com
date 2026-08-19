@@ -161,33 +161,72 @@
     }
 
     /*
-     * Keeps trackpad gestures inside the drawing canvas.
+     * Swipe-to-go-back, off for the whole site — and deliberately not scoped to
+     * the pages that need it.
      *
      * The canvas pans on horizontal wheel deltas, which the browser also reads
-     * as swipe-to-go-back once the scroll chain reaches the viewport — the page
+     * as a back gesture once the scroll chain reaches the viewport, so the page
      * navigates away mid-stroke. tldraw already calls `preventDefault()` on the
      * wheel event (verified: a dispatched wheel over the canvas comes back
-     * `defaultPrevented`), and it is not enough: Chrome decides the navigation
-     * in the compositor, so only the scroll chain itself can stop it. The
-     * vertical axis is blocked for the same reason — pull-to-refresh while
-     * drawing is the touch equivalent.
+     * `defaultPrevented`) and it is not enough — Chrome decides the navigation
+     * outside the renderer, so only the scroll chain itself can stop it.
      *
-     * All four declarations are load-bearing. `overscroll-behavior` "applies
-     * only to scroll containers", and `html`/`body` are not scroll containers
-     * while their overflow is `visible`, so declaring it on `html` alone left
-     * the gesture untouched. `overflow: hidden` makes them scroll containers,
-     * and the pair matches what tldraw.com serves — which is the reference for
-     * this working at all. Neither element scrolls here anyway: the canvas is
-     * `position: fixed`, so `body` is already zero-height.
+     * This lived under `html:has([data-canvas-surface])` and worked only on a
+     * fresh load: arriving at a drawing through a client-side navigation left
+     * the gesture live even though the computed style was identical either way
+     * (measured on both paths — `overflow: hidden`, `overscroll-behavior: none`
+     * on `html` and `body` alike). Chrome reads the root's overscroll-behavior
+     * when the document loads; changing it afterwards does not re-arm the
+     * gesture. tldraw.com escapes this by never changing it — its `html, body {
+     * overscroll-behavior-x: none }` is unscoped and static, which is the
+     * reference for this working at all.
      *
-     * Scoped through `:has()` to pages that mount a canvas, so ordinary pages
-     * keep both gestures. Browsers without `:has()` simply drop the rule and
-     * behave as they do today.
+     * So the horizontal axis is fixed for the document's whole life. The cost is
+     * that no page on the site answers a back-swipe; the back button, `Cmd+[`
+     * and the breadcrumb all still do.
+     *
+     * `overflow-x` is load-bearing next to it: `overscroll-behavior` "applies
+     * only to scroll containers", and an element is not one while its overflow
+     * is `visible`, so the declaration alone left the gesture untouched. Pinning
+     * one axis makes the other compute to `auto` rather than `visible`, so
+     * ordinary pages keep scrolling and only horizontal overflow is clipped.
+     *
+     * It goes on `html` alone, and the split is not cosmetic. `html` is the
+     * element whose value propagates to the viewport, so it is the only one that
+     * needs it — while adding it to `body` makes `body` a scroll container too,
+     * and the sticky page header then anchors to `body`, which never scrolls.
+     * Measured: the header left the viewport at `top: -900` after scrolling
+     * 900px, and returned to `top: 0` the moment `body` was `visible` again.
+     * `overscroll-behavior` creates no scroll container, so it is safe on both.
+     */
+    html {
+        overflow-x: hidden;
+    }
+
+    html, body {
+        overscroll-behavior-x: none;
+    }
+
+    /*
+     * The vertical half, which can stay scoped because nothing depends on it
+     * having been set at load: it suppresses pull-to-refresh — the touch
+     * equivalent of the problem above — and stops the page scrolling behind a
+     * canvas that is `position: fixed` anyway.
+     *
+     * Browsers without `:has()` drop this and keep both vertical gestures; the
+     * back-swipe is already handled above, unconditionally.
+     *
+     * The `overflow` shorthand rather than `overflow-y`, because leaving `body`
+     * with a horizontal axis of `visible` next to a vertical one of `hidden`
+     * computes that axis to `auto` and hands it a scrollbar it has no use for.
+     * It re-states `overflow-x: hidden` on `html`, which is what that element
+     * already carries — the same value is not a change, and only a change is
+     * what the rule above has to avoid.
      */
     html:has([data-canvas-surface]),
     html:has([data-canvas-surface]) body {
         overflow: hidden;
-        overscroll-behavior: none;
+        overscroll-behavior-y: none;
     }
 }
 
