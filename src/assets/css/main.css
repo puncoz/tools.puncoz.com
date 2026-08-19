@@ -114,9 +114,3 @@
         overscroll-behavior: none;
     }
 }
-
-@layer components {
-    .tl-watermark_SEE-LICENSE {
-        @apply !opacity-5;
-    }
-}
