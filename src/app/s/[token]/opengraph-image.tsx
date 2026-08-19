@@ -42,6 +42,16 @@ type Props = { params: Promise<{ token: string }> }
 const BRAND = "#567F95"
 
 /**
+ * The bare host, derived rather than written out again, so the card cannot end
+ * up naming a domain the site is no longer served from.
+ *
+ * The domain rather than the wordmark: a card seen in someone else's Slack is
+ * out of context by definition, and "tools.puncoz.com" tells a reader where the
+ * link goes — which is the question they actually have.
+ */
+const HOST = new URL(clientConfig.app.url).host
+
+/**
  * Shown for a dead token, a drawing with no preview yet, and a malformed URL
  * alike — deliberately the same card for all three. An unfurl that failed and an
  * unfurl of a revoked link must not be distinguishable, or the preview becomes a
@@ -170,7 +180,7 @@ const Image = async ({ params }: Props) => {
           </div>
 
           <div style={{ fontSize: 24, opacity: 0.85 }}>
-            {clientConfig.app.shortName}
+            {HOST}
           </div>
         </div>
       </div>
