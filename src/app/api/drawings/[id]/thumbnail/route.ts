@@ -15,7 +15,14 @@ type Context = { params: Promise<{ id: string }> }
  * Callers pass `?v={thumbnailUpdatedAt}` as a cache key. It must come from
  * `thumbnailUpdatedAt` and not `updatedAt`, since a preview write deliberately
  * leaves `updatedAt` alone. The value is never read here; it only has to change
- * when the preview does.
+ * when the preview does. One key covers both variants — they are rendered and
+ * written in the same pass, so they never disagree about their age.
+ *
+ * `?theme=dark` asks for the preview rendered in tldraw's dark theme, falling
+ * back to the light bytes when there is no dark variant. That fallback is the
+ * whole reason this is not a 404: every drawing made before the dark column
+ * existed has only a light preview until it is next opened, and a gallery of
+ * broken images would be a far worse answer than a gallery of light ones.
  *
  * CAVEAT: the `Cache-Control` below does not currently take effect. AuthKit's
  * proxy overwrites it with `no-store` on every response it touches, and the route
@@ -25,13 +32,14 @@ type Context = { params: Promise<{ id: string }> }
  * header and the cache key stay so that caching starts working by itself if that
  * behaviour ever changes, or if a CDN is put in front.
  */
-export const GET = async (_request: Request, { params }: Context): Promise<Response> => {
+export const GET = async (request: Request, { params }: Context): Promise<Response> => {
   const user = await getDbUser()
 
   if (!user) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 })
   }
 
+  const wantsDark = new URL(request.url).searchParams.get("theme") === "dark"
   const row = await getThumbnail(user.id, (await params).id)
 
   // A drawing owned by someone else, a drawing that does not exist, and a drawing
@@ -41,9 +49,11 @@ export const GET = async (_request: Request, { params }: Context): Promise<Respo
     return NextResponse.json({ error: "not_found" }, { status: 404 })
   }
 
+  const bytes = wantsDark ? row.thumbnailDark ?? row.thumbnail : row.thumbnail
+
   // Re-parsed rather than trusted: the `Content-Type` below is what decides how a
   // browser renders these bytes, so it comes from the validator, not the column.
-  const parsed = parseThumbnail(row.thumbnail)
+  const parsed = parseThumbnail(bytes)
 
   if (!parsed) {
     return NextResponse.json({ error: "not_found" }, { status: 404 })

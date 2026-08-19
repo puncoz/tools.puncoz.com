@@ -71,6 +71,13 @@
       "when": 1787039151942,
       "tag": "0009_add_drawing_soft_delete",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1787121195325,
+      "tag": "0010_add_dark_thumbnail",
+      "breakpoints": true
     }
   ]
 }

@@ -37,10 +37,12 @@ const blobToDataUrl = (blob: Blob): Promise<string> =>
   })
 
 /**
- * Keeps a drawing's gallery preview up to date.
+ * Keeps a drawing's gallery previews up to date.
  *
  * Renders the current page to a small webp through the editor that is already
- * open — there is no server-side tldraw — and PATCHes it as a data URL.
+ * open — there is no server-side tldraw — and PATCHes it as a data URL. Two of
+ * them: tldraw's exporter takes a `darkMode` flag, so the same page is rendered
+ * once per theme and the gallery card can match the page around it.
  *
  * Every failure here is swallowed. A missing or stale preview is a cosmetic
  * problem in a list; it must never surface as an error over someone's drawing,
@@ -50,11 +52,11 @@ const useThumbnail = (
   editor: Editor | null,
   store: TLStore,
   drawingId: string,
-  hasThumbnail: boolean,
+  needsThumbnail: boolean,
 ) => {
   // Held in a ref so the capture closure never goes stale, and so a re-render
   // cannot restart the timers mid-debounce.
-  const lastSentRef = useRef<string | null | undefined>(undefined)
+  const lastSentRef = useRef<string | undefined>(undefined)
   const inFlightRef = useRef(false)
 
   useEffect(() => {
@@ -65,7 +67,11 @@ const useThumbnail = (
     let cancelled = false
     let timer: ReturnType<typeof setTimeout> | null = null
 
-    const render = async (scale: number, quality: number): Promise<string | null> => {
+    const render = async (
+      scale: number,
+      quality: number,
+      darkMode: boolean,
+    ): Promise<string | null> => {
       const shapeIds = [...editor.getCurrentPageShapeIds()]
 
       if (shapeIds.length === 0) {
@@ -80,7 +86,7 @@ const useThumbnail = (
         // Bitmap exports default to 2, which would quadruple the pixel count for
         // no benefit at this size.
         pixelRatio: 1,
-        darkMode: false,
+        darkMode,
       })
 
       return blobToDataUrl(result.blob)
@@ -95,7 +101,7 @@ const useThumbnail = (
 
       try {
         const bounds = editor.getCurrentPageBounds()
-        const scale = bounds
+        const baseScale = bounds
           ? Math.min(
             THUMBNAIL_MAX_WIDTH / Math.max(bounds.width, 1),
             THUMBNAIL_MAX_HEIGHT / Math.max(bounds.height, 1),
@@ -103,31 +109,56 @@ const useThumbnail = (
           )
           : 1
 
-        let thumbnail = await render(scale, QUALITY)
+        // The light variant drives every decision here: whether the page is
+        // empty, and what scale and quality both renders end up using. It is the
+        // one every card falls back to, so it is the one worth retrying.
+        let scale = baseScale
+        let quality = QUALITY
+        let light = await render(scale, quality, false)
 
         // Dense drawings — or a photo pasted at full bleed — can clear the cap
         // even at this size. One smaller attempt, then give up and keep whatever
         // preview is already stored.
-        if (thumbnail !== null && thumbnail.length > MAX_THUMBNAIL_BYTES) {
-          thumbnail = await render(scale * RETRY_SCALE, RETRY_QUALITY)
+        if (light !== null && light.length > MAX_THUMBNAIL_BYTES) {
+          scale = baseScale * RETRY_SCALE
+          quality = RETRY_QUALITY
+          light = await render(scale, quality, false)
 
-          if (thumbnail !== null && thumbnail.length > MAX_THUMBNAIL_BYTES) {
+          if (light !== null && light.length > MAX_THUMBNAIL_BYTES) {
             return
           }
         }
 
-        if (cancelled || thumbnail === lastSentRef.current) {
+        // Rendered at whatever the light variant settled on, and dropped rather
+        // than retried if it still lands over the cap: the serving route falls
+        // back to the light bytes, which beats abandoning the whole update over
+        // the variant nobody has asked for yet.
+        let dark: string | null = null
+
+        if (light !== null) {
+          dark = await render(scale, quality, true)
+
+          if (dark !== null && dark.length > MAX_THUMBNAIL_BYTES) {
+            dark = null
+          }
+        }
+
+        // One key for the pair. Comparing only the light variant would skip the
+        // write that first fills in a missing dark one.
+        const signature = `${light ?? ""}|${dark ?? ""}`
+
+        if (cancelled || signature === lastSentRef.current) {
           return
         }
 
         const response = await fetch(`/api/drawings/${drawingId}`, {
           method: "PATCH",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ thumbnail }),
+          body: JSON.stringify({ thumbnail: light, thumbnailDark: dark }),
         })
 
         if (response.ok) {
-          lastSentRef.current = thumbnail
+          lastSentRef.current = signature
         }
       } catch {
         // Cosmetic. Swallowed on purpose — see the note above.
@@ -144,9 +175,10 @@ const useThumbnail = (
       timer = setTimeout(() => void capture(), delay)
     }
 
-    // A drawing with no preview gets one from simply being opened, which is what
-    // backfills everything that predates this — including imported drawings.
-    if (!hasThumbnail) {
+    // A drawing missing either variant gets both from simply being opened, which
+    // is what backfills everything that predates this — imported drawings, and
+    // drawings whose preview was rendered before there was a dark one.
+    if (needsThumbnail) {
       schedule(BACKFILL_MS)
     }
 
@@ -177,7 +209,7 @@ const useThumbnail = (
         clearTimeout(timer)
       }
     }
-  }, [editor, store, drawingId, hasThumbnail])
+  }, [editor, store, drawingId, needsThumbnail])
 }
 
 export { useThumbnail }

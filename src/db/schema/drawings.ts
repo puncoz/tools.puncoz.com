@@ -20,6 +20,15 @@ export const drawings = pgTable("drawings", {
   title: text("title").notNull().default("Untitled"),
   document: jsonb("document").notNull(),
   thumbnail: text("thumbnail"),
+  // The same preview rendered in tldraw's dark theme, so the gallery card
+  // matches the page around it. Written in the same pass as `thumbnail` and
+  // therefore covered by the one `thumbnailUpdatedAt` below.
+  //
+  // Nullable independently of `thumbnail`: a drawing that predates this column
+  // has a light preview and no dark one until it is next opened, and the serving
+  // route falls back to the light bytes rather than 404ing. A null `thumbnail`,
+  // by contrast, means there is no preview at all.
+  thumbnailDark: text("thumbnail_dark"),
   // Tracked separately from `updatedAt`, which a thumbnail write must not touch:
   // re-rendering a preview is not a user edit and must not reorder the gallery.
   // It doubles as the cache buster on the thumbnail URL, which `updatedAt` could

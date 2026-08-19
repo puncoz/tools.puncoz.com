@@ -58,11 +58,16 @@ export const PUT = async (request: Request, { params }: Context): Promise<Respon
 }
 
 /**
- * Renames a drawing, sets its gallery preview, or both.
+ * Renames a drawing, sets its gallery previews, or both.
  *
- * The two fields are written by separate queries on purpose: a rename is a user
- * edit and bumps `updatedAt`, a preview is not and must not. Sending both in one
- * request is allowed but is not something the UI currently does.
+ * Title and previews are written by separate queries on purpose: a rename is a
+ * user edit and bumps `updatedAt`, a preview is not and must not. Sending both
+ * in one request is allowed but is not something the UI currently does.
+ *
+ * The two preview variants, by contrast, are written together in one query.
+ * They share a single `thumbnailUpdatedAt`, which is also the cache buster on
+ * their URL, so writing them apart would let the pair disagree about its age and
+ * serve one stale variant under a key that says otherwise.
  */
 export const PATCH = async (request: Request, { params }: Context): Promise<Response> => {
   const user = await getDbUser()
@@ -72,7 +77,7 @@ export const PATCH = async (request: Request, { params }: Context): Promise<Resp
   }
 
   const body = await request.json().catch(() => null) as
-    { title?: unknown, thumbnail?: unknown } | null
+    { title?: unknown, thumbnail?: unknown, thumbnailDark?: unknown } | null
 
   if (!body) {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 })
@@ -94,10 +99,20 @@ export const PATCH = async (request: Request, { params }: Context): Promise<Resp
       return NextResponse.json({ error: "invalid_thumbnail" }, { status: 400 })
     }
 
+    // The dark variant is optional and validated the same way. Absent or null
+    // means "no dark render this time" — the serving route then falls back to
+    // the light bytes — so a client that only manages one variant still works.
+    const dark = body.thumbnailDark ?? null
+
+    if (dark !== null && parseThumbnail(dark) === null) {
+      return NextResponse.json({ error: "invalid_thumbnail" }, { status: 400 })
+    }
+
     const thumbnailUpdatedAt = await saveThumbnail(
       user.id,
       id,
       body.thumbnail as string | null,
+      dark as string | null,
     )
 
     if (thumbnailUpdatedAt === undefined) {

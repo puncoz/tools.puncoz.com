@@ -97,7 +97,13 @@ const countTrashedDrawings = async (userId: string): Promise<number> => {
 // `deletedAt` is dropped as well as the preview: both functions returning this
 // filter trashed rows out, so it would be null on every row they can produce and
 // would only invite a caller to check something already guaranteed.
-type DrawingWithDocument = Omit<DbDrawing, "thumbnail" | "deletedAt">
+type DrawingWithDocument = Omit<DbDrawing, "thumbnail" | "thumbnailDark" | "deletedAt"> & {
+  /**
+   * Whether the dark preview exists, without loading its bytes. Drives the
+   * one-off backfill for drawings rendered before there was a dark variant.
+   */
+  hasDarkThumbnail: boolean
+}
 
 const withDocumentColumns = {
   id: drawings.id,
@@ -105,6 +111,7 @@ const withDocumentColumns = {
   title: drawings.title,
   document: drawings.document,
   thumbnailUpdatedAt: drawings.thumbnailUpdatedAt,
+  hasDarkThumbnail: sql<boolean>`${drawings.thumbnailDark} is not null`,
   shareToken: drawings.shareToken,
   sharedAt: drawings.sharedAt,
   createdAt: drawings.createdAt,
@@ -183,9 +190,13 @@ const getDrawingByShareToken = async (
 const getThumbnail = async (
   userId: string,
   id: string,
-): Promise<Pick<DbDrawing, "thumbnail" | "thumbnailUpdatedAt"> | undefined> => {
+): Promise<Pick<DbDrawing, "thumbnail" | "thumbnailDark" | "thumbnailUpdatedAt"> | undefined> => {
   const [row] = await getDb()
-    .select({ thumbnail: drawings.thumbnail, thumbnailUpdatedAt: drawings.thumbnailUpdatedAt })
+    .select({
+      thumbnail: drawings.thumbnail,
+      thumbnailDark: drawings.thumbnailDark,
+      thumbnailUpdatedAt: drawings.thumbnailUpdatedAt,
+    })
     .from(drawings)
     .where(and(eq(drawings.id, id), eq(drawings.userId, userId)))
     .limit(1)
@@ -235,10 +246,21 @@ const saveThumbnail = async (
   userId: string,
   id: string,
   thumbnail: string | null,
+  thumbnailDark: string | null,
 ): Promise<Date | null | undefined> => {
+  // Clearing is driven by the light variant alone: null there means the drawing
+  // has no shapes left and so has no preview in either theme. A null dark
+  // variant beside a present light one is the ordinary state of a drawing that
+  // predates the column, and must not wipe the one preview it does have.
+  const cleared = thumbnail === null
+
   const [row] = await getDb()
     .update(drawings)
-    .set({ thumbnail, thumbnailUpdatedAt: thumbnail === null ? null : new Date() })
+    .set({
+      thumbnail,
+      thumbnailDark: cleared ? null : thumbnailDark,
+      thumbnailUpdatedAt: cleared ? null : new Date(),
+    })
     .where(owned(userId, id))
     .returning({ thumbnailUpdatedAt: drawings.thumbnailUpdatedAt })
 
@@ -262,6 +284,7 @@ const duplicateDrawing = async (
       title: drawings.title,
       document: drawings.document,
       thumbnail: drawings.thumbnail,
+      thumbnailDark: drawings.thumbnailDark,
       thumbnailUpdatedAt: drawings.thumbnailUpdatedAt,
     })
     .from(drawings)
@@ -281,6 +304,7 @@ const duplicateDrawing = async (
       // Carried over so the copy has a preview immediately rather than showing a
       // placeholder until someone opens it.
       thumbnail: source.thumbnail,
+      thumbnailDark: source.thumbnailDark,
       thumbnailUpdatedAt: source.thumbnailUpdatedAt,
       lastOpenedAt: new Date(),
     })

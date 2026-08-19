@@ -1,0 +1,1 @@
+ALTER TABLE "drawings" ADD COLUMN "thumbnail_dark" text;

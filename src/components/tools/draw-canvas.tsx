@@ -43,7 +43,7 @@ type Props = Readonly<{
     id: string
     title: string
     document: unknown
-    hasThumbnail: boolean
+    needsThumbnail: boolean
     isShared: boolean
   }
 }>
@@ -77,7 +77,7 @@ const DrawCanvas: FunctionComponent<Props> = ({ drawing }) => {
 
   useCanvasTheme(editor)
 
-  useThumbnail(editor, store, drawing.id, drawing.hasThumbnail)
+  useThumbnail(editor, store, drawing.id, drawing.needsThumbnail)
 
   return (
     <DrawingContext.Provider

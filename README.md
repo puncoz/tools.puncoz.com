@@ -94,7 +94,12 @@ throws outright on a path the AuthKit proxy does not cover.
 **Drawings persist as tldraw snapshots.** `@tldraw/sync` needs a persistent
 WebSocket and does not run on Vercel, so the canvas autosaves a document snapshot
 on a debounce instead. Gallery previews are rendered in the browser and stored as
-a size-capped WebP.
+a size-capped WebP — twice, once per theme, since tldraw's exporter takes a
+`darkMode` flag and a light preview on a dark card looks broken. The card renders
+both and hides one with `dark:`; a `loading="lazy"` image that is `display: none`
+is never fetched, so a gallery still downloads one image per card. Drawings whose
+preview predates the dark column fall back to the light bytes until they are next
+opened.
 
 **Object storage is optional and per-account.** Users can point the draw tool at
 their own S3, Cloudflare R2 or Supabase Storage bucket under
