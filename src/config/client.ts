@@ -19,6 +19,13 @@ const clientConfig = {
     tagline: "A personal toolbox",
     description:
       "A small collection of tools I built for myself — diagrams, notes and whatever comes next.",
+    /**
+     * The address the legal pages publish for privacy, deletion and account
+     * requests. Defined here so both documents and the footer quote the same
+     * one — a policy that promises a channel nobody reads is worse than no
+     * policy, so this must stay an address that actually receives mail.
+     */
+    contactEmail: "info@puncoz.com",
   },
 
   workos: {

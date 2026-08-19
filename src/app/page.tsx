@@ -1,8 +1,8 @@
 import AccessNotice from "@/components/account/access-notice"
 import UserMenu from "@/components/auth/user-menu"
 import ImportLegacyDrawings from "@/components/tools/import-legacy-drawings"
-import ToolCredits from "@/components/tools/tool-credits"
 import ToolDirectory from "@/components/tools/tool-directory"
+import SiteFooter from "@/components/ui/site-footer"
 import { clientConfig } from "@/config/client"
 import { canUseTools } from "@/lib/auth/access"
 import { getAccountUser } from "@/lib/auth/current-user"
@@ -54,7 +54,7 @@ const HomePage = async ({ searchParams }: Props) => {
           <ToolDirectory/>
         </div>
 
-        <ToolCredits/>
+        <SiteFooter/>
       </main>
     </div>
   )

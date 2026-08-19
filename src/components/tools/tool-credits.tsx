@@ -10,6 +10,11 @@ import { TOOLS } from "@/lib/tools"
  *
  * Derived from the registry, so crediting a new tool's library is a field on its
  * entry rather than an edit to this file.
+ *
+ * Renders the credit line only. The `<footer>` around it belongs to
+ * `site-footer.tsx`, which also carries the legal links — keeping the shell out
+ * here is what stops this file from slowly becoming "everything at the bottom
+ * of the page".
  */
 const ToolCredits: FunctionComponent = () => {
   // flatMap rather than filter so the optional `builtWith` narrows to defined.
@@ -22,24 +27,22 @@ const ToolCredits: FunctionComponent = () => {
   }
 
   return (
-    <footer className="mt-14 border-t border-border pt-6">
-      <p className="text-xs leading-relaxed text-muted-foreground">
-        {credits.map(credit => (
-          <Fragment key={credit.slug}>
-            {credit.name} is built with{" "}
-            <a
-              href={credit.builtWith.href}
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium text-foreground underline-offset-4 hover:underline"
-            >
-              {credit.builtWith.name}
-            </a>
-            .{" "}
-          </Fragment>
-        ))}
-      </p>
-    </footer>
+    <p className="text-xs leading-relaxed text-muted-foreground">
+      {credits.map(credit => (
+        <Fragment key={credit.slug}>
+          {credit.name} is built with{" "}
+          <a
+            href={credit.builtWith.href}
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-foreground underline-offset-4 hover:underline"
+          >
+            {credit.builtWith.name}
+          </a>
+          .{" "}
+        </Fragment>
+      ))}
+    </p>
   )
 }
 
