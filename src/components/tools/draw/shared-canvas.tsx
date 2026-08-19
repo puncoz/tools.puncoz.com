@@ -10,21 +10,44 @@ import {
   Tldraw,
   type TLComponents,
 } from "tldraw"
+import { PANEL_CLASSES } from "@/components/tools/draw/floating-menu"
+import PageSwitcher from "@/components/tools/draw/page-switcher"
 import { createSharedAssetStore } from "@/components/tools/draw/shared-asset-store"
 import { customShapeUtils } from "@/components/tools/draw/shapes"
 import { useCanvasTheme } from "@/components/tools/draw/use-canvas-theme"
+import ThemeMenu from "@/components/ui/theme-menu"
 import { clientConfig } from "@/config/client"
 import "tldraw/tldraw.css"
+
+/**
+ * The visitor's own light/dark preference, in the same top-right corner and with
+ * the same styling the editor gives it — see `share-panel.tsx` for why a bare
+ * icon over a drawing does not work.
+ *
+ * Worth carrying into the read-only view rather than leaving to whatever the
+ * visitor's system says: a shared drawing is often the only page of this site
+ * someone ever sees, it is full-bleed canvas with no header to hold the control,
+ * and a diagram drawn in one mode is not always legible in the other.
+ */
+const ThemeControl: FunctionComponent = () => (
+  <ThemeMenu className={PANEL_CLASSES} surfaceClassName="z-[100000]"/>
+)
 
 /**
  * Editing chrome removed outright rather than disabled. Read-only mode already
  * hides most of it, but leaving the zones empty means there is nothing to click
  * even if a future tldraw release changes what read-only suppresses.
+ *
+ * The two exceptions are the controls a visitor does get, and neither can edit
+ * anything: the page switcher, and the theme. `TopPanel` holds the switcher
+ * centred, because the top-left corner belongs to the title and "Read-only"
+ * badge that `s/[token]/page.tsx` pins over the canvas; `SharePanel` is the
+ * top-right corner, where the editor keeps its own theme control.
  */
 const components: TLComponents = {
   MenuPanel: null,
-  TopPanel: null,
-  SharePanel: null,
+  TopPanel: PageSwitcher,
+  SharePanel: ThemeControl,
   Toolbar: null,
   StylePanel: null,
   PageMenu: null,
