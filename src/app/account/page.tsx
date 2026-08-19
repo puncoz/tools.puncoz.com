@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import { Clock, ShieldBan, ShieldX } from "lucide-react"
 import { redirect } from "next/navigation"
 import ReapplyForm from "@/components/account/reapply-form"
@@ -6,6 +7,12 @@ import { canUseTools, reapplyAvailableAt } from "@/lib/auth/access"
 // One of only three places allowed to reach a non-approved user — this page
 // exists precisely to explain to them why they are not approved.
 import { requireAccountUser } from "@/lib/auth/current-user"
+
+export const metadata: Metadata = {
+  title: "Account",
+  description: "Your access to the tools on this site.",
+  robots: { index: false, follow: false },
+}
 
 export const dynamic = "force-dynamic"
 

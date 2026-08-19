@@ -1,7 +1,15 @@
+import type { Metadata } from "next"
 import Editor from "@/components/editor"
 import EditorProvider from "@/components/providers/editor-provider"
 import PageShell from "@/components/ui/page-shell"
 import { requireAuth } from "@/lib/auth/session"
+import { toolBySlug } from "@/lib/tools"
+
+export const metadata: Metadata = {
+  title: "Editor",
+  description: toolBySlug("notes")?.description,
+  robots: { index: false, follow: false },
+}
 
 /**
  * The editor is still a stub — the tool registry marks it `soon` and its card is

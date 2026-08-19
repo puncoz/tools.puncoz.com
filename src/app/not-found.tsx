@@ -1,7 +1,13 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import type { FunctionComponent } from "react"
 import { buttonClasses } from "@/components/ui/button"
 import PageShell from "@/components/ui/page-shell"
+
+export const metadata: Metadata = {
+  title: "Not found",
+  robots: { index: false, follow: false },
+}
 
 /**
  * The 404, in the same shell as everything else.

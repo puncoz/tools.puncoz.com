@@ -22,8 +22,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(clientConfig.app.url),
   title: {
     default: clientConfig.app.name,
-    // Pages set a bare title; the wordmark is appended for them.
-    template: `%s — ${clientConfig.app.name}`,
+    // Pages set a bare title; the site name is appended for them.
+    template: `%s | ${clientConfig.app.name}`,
   },
   description: clientConfig.app.description,
   applicationName: clientConfig.app.name,
@@ -35,9 +35,6 @@ export const metadata: Metadata = {
     ...(clientConfig.verification.bing
       ? { other: { "msvalidate.01": clientConfig.verification.bing } }
       : {}),
-  },
-  alternates: {
-    canonical: "/",
   },
   openGraph: {
     type: "website",

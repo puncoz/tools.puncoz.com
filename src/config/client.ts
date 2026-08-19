@@ -11,9 +11,13 @@
  */
 const clientConfig = {
   app: {
-    /** Browser tab and metadata title. */
-    name: "Puncoz Tools",
-    /** Wordmark in page headers. */
+    /** Browser tab and metadata title, and the tail of every page title. */
+    name: "Dev Tools",
+    /**
+     * Short form, for places with no room for a sentence: the installed PWA name
+     * and the corner of the share card. Page headers use the wordmark image
+     * instead — see `components/ui/logo.tsx`.
+     */
     shortName: "puncoz/tools",
     /** Landing page tagline, also the metadata description. */
     tagline: "A personal toolbox",

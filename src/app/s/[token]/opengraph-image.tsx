@@ -32,7 +32,7 @@ export const size = { width: 1200, height: 630 }
 
 export const contentType = "image/png"
 
-export const alt = "A drawing shared from Puncoz Tools"
+export const alt = `A drawing shared from ${clientConfig.app.name}`
 
 // Reads a live row, and must stop rendering the moment sharing is revoked.
 export const dynamic = "force-dynamic"

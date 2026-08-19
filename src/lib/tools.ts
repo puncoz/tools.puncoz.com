@@ -64,6 +64,16 @@ const TOOLS: Tool[] = [
   },
 ]
 
+/**
+ * A tool by slug, for the pages that describe themselves.
+ *
+ * Lets each tool's page take its meta description from the same entry the
+ * landing-page card renders, so the two cannot drift and a new tool arrives
+ * described without a second edit.
+ */
+const toolBySlug = (slug: string): Tool | undefined =>
+  TOOLS.find(tool => tool.slug === slug)
+
 /** Categories actually in use, in registry order. */
 const usedCategories = (tools: Tool[]): ToolCategory[] =>
   [...new Set(tools.map(tool => tool.category))]
@@ -90,5 +100,5 @@ const matchesQuery = (tool: Tool, query: string): boolean => {
   return terms.every(term => haystack.includes(term))
 }
 
-export { CATEGORY_LABELS, TOOLS, matchesQuery, usedCategories }
+export { CATEGORY_LABELS, TOOLS, matchesQuery, toolBySlug, usedCategories }
 export type { Tool, ToolCategory, ToolStatus }

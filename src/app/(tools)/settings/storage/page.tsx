@@ -1,7 +1,14 @@
+import type { Metadata } from "next"
 import StorageForm from "@/components/settings/storage-form"
 import PageShell from "@/components/ui/page-shell"
 import { requireDbUser } from "@/lib/auth/current-user"
 import { getStorageSettings } from "@/lib/storage/queries"
+
+export const metadata: Metadata = {
+  title: "Storage",
+  description: "Connect your own S3, Cloudflare R2 or Supabase Storage bucket for drawing images.",
+  robots: { index: false, follow: false },
+}
 
 const StorageSettingsPage = async () => {
   const user = await requireDbUser()

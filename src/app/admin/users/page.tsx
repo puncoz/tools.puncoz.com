@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import InviteUserForm from "@/components/admin/invite-user-form"
 import UserRowActions from "@/components/admin/user-row-actions"
 import PageShell from "@/components/ui/page-shell"
@@ -9,6 +10,12 @@ import { requireAdmin } from "@/lib/auth/current-user"
 import { listUsers } from "@/lib/users/queries"
 import { relativeTime } from "@/lib/ui/relative-time"
 import { cn } from "@/lib/utils"
+
+export const metadata: Metadata = {
+  title: "People",
+  description: "Review who may use the tools on this site.",
+  robots: { index: false, follow: false },
+}
 
 export const dynamic = "force-dynamic"
 

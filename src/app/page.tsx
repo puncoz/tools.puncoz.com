@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import AccessNotice from "@/components/account/access-notice"
 import StructuredData from "@/components/seo/structured-data"
 import ImportLegacyDrawings from "@/components/tools/import-legacy-drawings"
@@ -9,6 +10,15 @@ import { getAccountUser } from "@/lib/auth/current-user"
 
 type Props = {
   searchParams: Promise<{ error?: string }>
+}
+
+/**
+ * Title and description come from the root layout's defaults — this is the page
+ * they describe. Only the canonical is stated, and it is stated here rather than
+ * in the layout so no other route inherits a claim to be the homepage.
+ */
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
 }
 
 // Renders per-user auth state in the header, so it cannot be prerendered.

@@ -8,7 +8,13 @@ import type { MetadataRoute } from "next"
  * `X-Robots-Tag` header from `next.config.ts`.
  */
 const robots = (): MetadataRoute.Robots => ({
-  rules: [{ userAgent: "*", disallow: ["/s/", "/api/", "/auth/", "/settings/"] }],
+  rules: [{
+    userAgent: "*",
+    // Everything that needs a session. A crawler reaching these is redirected to
+    // sign in, so nothing leaks either way — but a redirect it never requests is
+    // cheaper than one it does, and this does not rely on that redirect staying.
+    disallow: ["/s/", "/api/", "/auth/", "/settings/", "/draw", "/notes", "/account", "/admin"],
+  }],
 })
 
 export default robots

@@ -1,13 +1,29 @@
+import type { Metadata } from "next"
 import Link from "next/link"
 import DrawingGallery from "@/components/tools/draw/drawing-gallery"
 import TrashGallery from "@/components/tools/draw/trash-gallery"
 import PageShell from "@/components/ui/page-shell"
 import { requireDbUser } from "@/lib/auth/current-user"
 import { countTrashedDrawings, listDrawings, listTrashedDrawings } from "@/lib/drawings/queries"
+import { toolBySlug } from "@/lib/tools"
 import { relativeTime } from "@/lib/ui/relative-time"
 import { cn } from "@/lib/utils"
 
 const absolute = new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" })
+
+/**
+ * Described from the tool registry, so the meta description and the landing
+ * page's card for this tool cannot drift apart.
+ *
+ * `noindex` because the page is a list of one person's private drawings. It is
+ * behind a session and a crawler would only ever be redirected to sign in, but
+ * saying so costs nothing and does not depend on that redirect staying in place.
+ */
+export const metadata: Metadata = {
+  title: "Draw",
+  description: toolBySlug("draw")?.description,
+  robots: { index: false, follow: false },
+}
 
 type Props = {
   searchParams: Promise<{ view?: string }>
