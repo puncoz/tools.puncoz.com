@@ -120,6 +120,10 @@ export const PATCH = async (request: Request, { params }: Context): Promise<Resp
   return drawing ? NextResponse.json({ drawing }) : notFound()
 }
 
+/**
+ * Moves a drawing to the trash. Nothing is destroyed here — restoring it and
+ * removing it for good both live at `[id]/trash`.
+ */
 export const DELETE = async (_request: Request, { params }: Context): Promise<Response> => {
   const user = await getDbUser()
 

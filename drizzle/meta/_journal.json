@@ -64,6 +64,13 @@
       "when": 1786819320821,
       "tag": "0008_add_user_access",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1787039151942,
+      "tag": "0009_add_drawing_soft_delete",
+      "breakpoints": true
     }
   ]
 }

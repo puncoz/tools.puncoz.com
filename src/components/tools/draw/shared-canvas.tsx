@@ -76,7 +76,7 @@ const SharedCanvas: FunctionComponent<Props> = ({ token, document }) => {
   }
 
   return (
-    <div className="fixed inset-0">
+    <div data-canvas-surface className="fixed inset-0">
       <Tldraw
         store={store}
         shapeUtils={customShapeUtils}

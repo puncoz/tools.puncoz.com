@@ -85,7 +85,8 @@ const DrawCanvas: FunctionComponent<Props> = ({ drawing }) => {
         isShared: drawing.isShared,
       }}
     >
-      <div className="fixed inset-0">
+      {/* The marker `main.css` looks for to stop swipe-to-go-back. */}
+      <div data-canvas-surface className="fixed inset-0">
         <Tldraw
           store={store}
           shapeUtils={customShapeUtils}

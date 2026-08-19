@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm"
 import { index, jsonb, pgTable, text, timestamp, uniqueIndex, uuid } from "drizzle-orm/pg-core"
 import { users } from "@/db/schema/users"
 
@@ -32,9 +33,19 @@ export const drawings = pgTable("drawings", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   lastOpenedAt: timestamp("last_opened_at", { withTimezone: true }),
+  // Null means live. Deleting moves a drawing to the trash by stamping this
+  // instead of removing the row, so the document, its preview and its share
+  // token all survive a mistake. Every read is filtered on it — see the note at
+  // the top of `lib/drawings/queries.ts`.
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 }, table => [
   // Drives the drawing gallery's ordering.
   index("drawings_user_updated_idx").on(table.userId, table.updatedAt.desc()),
+  // Drives the trash view, and is partial so it indexes only the handful of
+  // rows that are actually in the trash rather than every drawing.
+  index("drawings_user_deleted_idx")
+    .on(table.userId, table.deletedAt.desc())
+    .where(sql`${table.deletedAt} is not null`),
   // Makes lookup by share token a single indexed read, and turns a token
   // collision into a write error rather than two drawings sharing a link.
   // Postgres treats nulls as distinct here, so unshared rows are unconstrained.

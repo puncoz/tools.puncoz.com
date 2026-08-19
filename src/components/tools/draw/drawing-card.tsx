@@ -3,6 +3,7 @@
 import { Copy, MoreHorizontal, Pencil, Share2, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { type FunctionComponent, useState } from "react"
+import DrawingPreview from "@/components/tools/draw/drawing-preview"
 import { useDismissableMenu } from "@/components/tools/draw/floating-menu"
 import ShareControls from "@/components/tools/draw/share-controls"
 import { startNavigation, withProgress } from "@/lib/ui/progress"
@@ -87,26 +88,13 @@ const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
     })
   }
 
-  const preview = drawing.thumbnailVersion === null
-    ? (
-      <div className="flex size-full items-center justify-center bg-muted">
-        <span className="text-3xl font-semibold text-muted-foreground/50">
-          {(drawing.title.trim()[0] ?? "?").toUpperCase()}
-        </span>
-      </div>
-    )
-    : (
-      // A plain <img>: the route is private and authenticated by cookie, so the
-      // Next image optimizer — which refetches server-side without them — would
-      // only ever get a 401.
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={`/api/drawings/${drawing.id}/thumbnail?v=${encodeURIComponent(drawing.thumbnailVersion)}`}
-        alt=""
-        loading="lazy"
-        className="size-full bg-white object-contain"
-      />
-    )
+  const preview = (
+    <DrawingPreview
+      drawingId={drawing.id}
+      title={drawing.title}
+      thumbnailVersion={drawing.thumbnailVersion}
+    />
+  )
 
   return (
     <div className={cn("group relative", busy && "opacity-60")}>
@@ -202,7 +190,7 @@ const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
             {!sharing && confirmingDelete && (
               <>
                   <p className="px-3 py-2 text-xs text-muted-foreground">
-                    Delete this drawing? This cannot be undone.
+                    Move this drawing to the trash? You can restore it from there.
                   </p>
 
                   <button
@@ -213,7 +201,7 @@ const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
                     className={cn(menuItemClasses, "text-destructive hover:bg-destructive/10")}
                   >
                     <Trash2 className="size-3.5" aria-hidden="true"/>
-                    Yes, delete
+                    Yes, move to trash
                   </button>
 
                   <button

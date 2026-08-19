@@ -83,6 +83,24 @@
     body {
         @apply font-sans antialiased bg-background text-foreground;
     }
+
+    /*
+     * Keeps trackpad gestures inside the drawing canvas.
+     *
+     * The canvas pans on horizontal wheel deltas, which the browser also reads
+     * as swipe-to-go-back once the scroll chain reaches the viewport — the page
+     * navigates away mid-stroke, and the gesture is decided by the compositor
+     * before tldraw's handlers ever run, so only this can stop it. The vertical
+     * axis is blocked for the same reason: pull-to-refresh while drawing is the
+     * touch equivalent.
+     *
+     * Scoped through `:has()` to pages that mount a canvas, so ordinary pages
+     * keep both gestures. Browsers without `:has()` simply drop the rule and
+     * behave as they do today.
+     */
+    html:has([data-canvas-surface]) {
+        overscroll-behavior: none;
+    }
 }
 
 @layer components {

@@ -1,5 +1,5 @@
 import "server-only"
-import { and, desc, eq, isNotNull, ne, sql } from "drizzle-orm"
+import { and, desc, eq, isNotNull, isNull, ne, sql } from "drizzle-orm"
 import { getDb } from "@/db"
 import { type DbDrawing, drawings, users } from "@/db/schema"
 import { createShareToken } from "@/lib/drawings/share"
@@ -11,7 +11,21 @@ import { createShareToken } from "@/lib/drawings/share"
  * must never be sufficient to read or write a row — ids are uuids, but they
  * appear in URLs and are not a secret. Route handlers derive `userId` from the
  * session and never from the request.
+ *
+ * DELETION IS SOFT. `deleteDrawing` stamps `deletedAt` rather than removing the
+ * row, so everything that reads or writes a live drawing has to say so — hence
+ * `owned()` below, which every such query builds its WHERE from. Adding a query
+ * that filters on user and id alone would quietly resurrect trashed drawings
+ * into the gallery, so reach for the helper rather than rewriting the pair.
  */
+
+/** A drawing the user owns and has not deleted. The default for everything. */
+const owned = (userId: string, id: string) =>
+  and(eq(drawings.id, id), eq(drawings.userId, userId), isNull(drawings.deletedAt))
+
+/** The same row once it is in the trash — restore and permanent delete only. */
+const ownedTrashed = (userId: string, id: string) =>
+  and(eq(drawings.id, id), eq(drawings.userId, userId), isNotNull(drawings.deletedAt))
 
 /**
  * Shape used by the drawing list — deliberately omits both heavy columns.
@@ -45,8 +59,33 @@ const listDrawings = async (userId: string): Promise<DrawingSummary[]> =>
   getDb()
     .select(summaryColumns)
     .from(drawings)
-    .where(eq(drawings.userId, userId))
+    .where(and(eq(drawings.userId, userId), isNull(drawings.deletedAt)))
     .orderBy(desc(drawings.updatedAt))
+
+/** Trashed drawings, most recently deleted first. */
+type TrashedDrawing = DrawingSummary & { deletedAt: Date }
+
+const listTrashedDrawings = async (userId: string): Promise<TrashedDrawing[]> => {
+  const rows = await getDb()
+    .select({ ...summaryColumns, deletedAt: drawings.deletedAt })
+    .from(drawings)
+    .where(and(eq(drawings.userId, userId), isNotNull(drawings.deletedAt)))
+    .orderBy(desc(drawings.deletedAt))
+
+  // `deletedAt` is non-null on every row the WHERE clause can return, which the
+  // column's own nullable type has no way to express.
+  return rows as TrashedDrawing[]
+}
+
+/** Drives the trash link's badge, so the gallery never loads the trash itself. */
+const countTrashedDrawings = async (userId: string): Promise<number> => {
+  const [row] = await getDb()
+    .select({ count: sql<number>`count(*)::int` })
+    .from(drawings)
+    .where(and(eq(drawings.userId, userId), isNotNull(drawings.deletedAt)))
+
+  return row?.count ?? 0
+}
 
 /**
  * A drawing with its document but without its preview.
@@ -55,7 +94,10 @@ const listDrawings = async (userId: string): Promise<DrawingSummary[]> =>
  * use to anything that opens a drawing, so it is fetched only by the two places
  * that actually need the bytes.
  */
-type DrawingWithDocument = Omit<DbDrawing, "thumbnail">
+// `deletedAt` is dropped as well as the preview: both functions returning this
+// filter trashed rows out, so it would be null on every row they can produce and
+// would only invite a caller to check something already guaranteed.
+type DrawingWithDocument = Omit<DbDrawing, "thumbnail" | "deletedAt">
 
 const withDocumentColumns = {
   id: drawings.id,
@@ -77,7 +119,7 @@ const getDrawing = async (
   const [row] = await getDb()
     .select(withDocumentColumns)
     .from(drawings)
-    .where(and(eq(drawings.id, id), eq(drawings.userId, userId)))
+    .where(owned(userId, id))
     .limit(1)
 
   return row
@@ -99,6 +141,12 @@ const getDrawing = async (
  * Returns the document but never the thumbnail — the public page renders the
  * canvas, not a preview.
  *
+ * Trashed drawings are excluded, but their token is deliberately left in place
+ * rather than revoked: the link is dead while the drawing is in the trash and
+ * comes back working if it is restored. Deleting is not meant to be the way you
+ * un-share something — the share controls are — and a delete-then-restore should
+ * not silently invalidate a link that has been handed out.
+ *
  * Banned owners are excluded. Ban is the punitive status and should actually
  * take content offline, rather than leaving it served from this domain
  * indefinitely. Declined and pending owners keep their links: declined means
@@ -115,6 +163,7 @@ const getDrawingByShareToken = async (
     .where(and(
       eq(drawings.shareToken, token),
       isNotNull(drawings.shareToken),
+      isNull(drawings.deletedAt),
       ne(users.accessStatus, "banned"),
     ))
     .limit(1)
@@ -122,7 +171,15 @@ const getDrawingByShareToken = async (
   return row
 }
 
-/** Only the thumbnail columns, so the serving route never loads the document. */
+/**
+ * Only the thumbnail columns, so the serving route never loads the document.
+ *
+ * The one owner-scoped read that does NOT exclude trashed drawings, because the
+ * trash shows previews too — otherwise every card there would be a placeholder
+ * letter and picking the right one back out would be guesswork. It is safe: the
+ * row is still the caller's own, and a preview is the least of what they can
+ * already restore.
+ */
 const getThumbnail = async (
   userId: string,
   id: string,
@@ -157,7 +214,10 @@ const saveDocument = async (
   const [row] = await getDb()
     .update(drawings)
     .set({ document, updatedAt: new Date() })
-    .where(and(eq(drawings.id, id), eq(drawings.userId, userId)))
+    // Trashed rows are excluded, so a tab left open on a drawing deleted from
+    // somewhere else gets a 404 from autosave rather than quietly writing into
+    // the trash.
+    .where(owned(userId, id))
     .returning()
 
   return row
@@ -179,7 +239,7 @@ const saveThumbnail = async (
   const [row] = await getDb()
     .update(drawings)
     .set({ thumbnail, thumbnailUpdatedAt: thumbnail === null ? null : new Date() })
-    .where(and(eq(drawings.id, id), eq(drawings.userId, userId)))
+    .where(owned(userId, id))
     .returning({ thumbnailUpdatedAt: drawings.thumbnailUpdatedAt })
 
   return row?.thumbnailUpdatedAt
@@ -205,7 +265,7 @@ const duplicateDrawing = async (
       thumbnailUpdatedAt: drawings.thumbnailUpdatedAt,
     })
     .from(drawings)
-    .where(and(eq(drawings.id, id), eq(drawings.userId, userId)))
+    .where(owned(userId, id))
     .limit(1)
 
   if (!source) {
@@ -239,7 +299,7 @@ const renameDrawing = async (
   const [row] = await getDb()
     .update(drawings)
     .set({ title, updatedAt: new Date() })
-    .where(and(eq(drawings.id, id), eq(drawings.userId, userId)))
+    .where(owned(userId, id))
     .returning(summaryColumns)
 
   return row
@@ -255,7 +315,7 @@ const getShareState = async (
   const [row] = await getDb()
     .select({ shareToken: drawings.shareToken, sharedAt: drawings.sharedAt })
     .from(drawings)
-    .where(and(eq(drawings.id, id), eq(drawings.userId, userId)))
+    .where(owned(userId, id))
     .limit(1)
 
   return row
@@ -287,7 +347,7 @@ const setSharing = async (
   const [row] = await getDb()
     .update(drawings)
     .set({ shareToken: createShareToken(), sharedAt: new Date() })
-    .where(and(eq(drawings.id, id), eq(drawings.userId, userId)))
+    .where(owned(userId, id))
     .returning({ shareToken: drawings.shareToken, sharedAt: drawings.sharedAt })
 
   return row
@@ -298,7 +358,7 @@ const revokeSharing = async (userId: string, id: string): Promise<boolean> => {
   const rows = await getDb()
     .update(drawings)
     .set({ shareToken: null, sharedAt: null })
-    .where(and(eq(drawings.id, id), eq(drawings.userId, userId)))
+    .where(owned(userId, id))
     .returning({ id: drawings.id })
 
   return rows.length > 0
@@ -308,32 +368,87 @@ const touchDrawing = async (userId: string, id: string): Promise<void> => {
   await getDb()
     .update(drawings)
     .set({ lastOpenedAt: new Date() })
-    .where(and(eq(drawings.id, id), eq(drawings.userId, userId)))
+    .where(owned(userId, id))
 }
 
+/**
+ * Moves a drawing to the trash.
+ *
+ * Nothing is destroyed: the document, its preview and its share token all stay
+ * on the row, and `updatedAt` is left alone so the drawing sorts back into the
+ * same place in the gallery if it is restored. Deleting the wrong card is the
+ * cheapest mistake to make in a grid of thumbnails, and the only one that used
+ * to be unrecoverable.
+ */
 const deleteDrawing = async (userId: string, id: string): Promise<boolean> => {
   const rows = await getDb()
-    .delete(drawings)
-    .where(and(eq(drawings.id, id), eq(drawings.userId, userId)))
+    .update(drawings)
+    .set({ deletedAt: new Date() })
+    .where(owned(userId, id))
     .returning({ id: drawings.id })
 
   return rows.length > 0
 }
 
+/** Brings a drawing back out of the trash, share link and all. */
+const restoreDrawing = async (
+  userId: string,
+  id: string,
+): Promise<DrawingSummary | undefined> => {
+  const [row] = await getDb()
+    .update(drawings)
+    .set({ deletedAt: null })
+    .where(ownedTrashed(userId, id))
+    .returning(summaryColumns)
+
+  return row
+}
+
+/**
+ * Removes a trashed drawing for good.
+ *
+ * Scoped to `ownedTrashed` so this cannot reach a live drawing: everything has
+ * to pass through the trash first, which means the destructive path always has
+ * a deliberate second step behind it.
+ */
+const purgeDrawing = async (userId: string, id: string): Promise<boolean> => {
+  const rows = await getDb()
+    .delete(drawings)
+    .where(ownedTrashed(userId, id))
+    .returning({ id: drawings.id })
+
+  return rows.length > 0
+}
+
+/** Same, for everything in the trash at once. Returns how many rows went. */
+const emptyTrash = async (userId: string): Promise<number> => {
+  const rows = await getDb()
+    .delete(drawings)
+    .where(and(eq(drawings.userId, userId), isNotNull(drawings.deletedAt)))
+    .returning({ id: drawings.id })
+
+  return rows.length
+}
+
 export {
+  countTrashedDrawings,
   createDrawing,
   deleteDrawing,
   duplicateDrawing,
+  emptyTrash,
   getDrawing,
   getDrawingByShareToken,
   getShareState,
   getThumbnail,
   listDrawings,
+  listTrashedDrawings,
+  purgeDrawing,
   renameDrawing,
+  restoreDrawing,
   revokeSharing,
   saveDocument,
   saveThumbnail,
   setSharing,
   touchDrawing,
 }
-export type { DrawingSummary, DrawingWithDocument, ShareState }
+export type { DrawingSummary, DrawingWithDocument, ShareState, TrashedDrawing }

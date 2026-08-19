@@ -1,0 +1,2 @@
+ALTER TABLE "drawings" ADD COLUMN "deleted_at" timestamp with time zone;--> statement-breakpoint
+CREATE INDEX "drawings_user_deleted_idx" ON "drawings" USING btree ("user_id","deleted_at" DESC NULLS LAST) WHERE "drawings"."deleted_at" is not null;

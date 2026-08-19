@@ -106,6 +106,12 @@ images embed as data URLs and a document size guard warns before saving breaks.
 read-only to anyone holding the link, without a sign-in. Sharing is off per
 drawing until switched on, and revoking takes effect on the next request.
 
+**Deleting a drawing is soft.** It moves to `/draw?view=trash` with its
+document, preview and share token intact, and the link goes dead until it is
+restored. Nothing removes a row except an explicit "delete forever" or "empty
+trash" — those two are the only destructive paths, and both refuse to touch a
+drawing that is not already in the trash.
+
 **AWS icons are generated, not committed.** `scripts/build-aws-icons.ts` copies
 299 service icons out of the `aws-icons` dependency into a gitignored
 `public/aws-icons/`. The artwork is AWS's — permitted for drawing architecture
