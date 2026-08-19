@@ -89,16 +89,28 @@
      *
      * The canvas pans on horizontal wheel deltas, which the browser also reads
      * as swipe-to-go-back once the scroll chain reaches the viewport — the page
-     * navigates away mid-stroke, and the gesture is decided by the compositor
-     * before tldraw's handlers ever run, so only this can stop it. The vertical
-     * axis is blocked for the same reason: pull-to-refresh while drawing is the
-     * touch equivalent.
+     * navigates away mid-stroke. tldraw already calls `preventDefault()` on the
+     * wheel event (verified: a dispatched wheel over the canvas comes back
+     * `defaultPrevented`), and it is not enough: Chrome decides the navigation
+     * in the compositor, so only the scroll chain itself can stop it. The
+     * vertical axis is blocked for the same reason — pull-to-refresh while
+     * drawing is the touch equivalent.
+     *
+     * All four declarations are load-bearing. `overscroll-behavior` "applies
+     * only to scroll containers", and `html`/`body` are not scroll containers
+     * while their overflow is `visible`, so declaring it on `html` alone left
+     * the gesture untouched. `overflow: hidden` makes them scroll containers,
+     * and the pair matches what tldraw.com serves — which is the reference for
+     * this working at all. Neither element scrolls here anyway: the canvas is
+     * `position: fixed`, so `body` is already zero-height.
      *
      * Scoped through `:has()` to pages that mount a canvas, so ordinary pages
      * keep both gestures. Browsers without `:has()` simply drop the rule and
      * behave as they do today.
      */
-    html:has([data-canvas-surface]) {
+    html:has([data-canvas-surface]),
+    html:has([data-canvas-surface]) body {
+        overflow: hidden;
         overscroll-behavior: none;
     }
 }
