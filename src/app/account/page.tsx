@@ -1,6 +1,5 @@
 import { Clock, ShieldBan, ShieldX } from "lucide-react"
 import { redirect } from "next/navigation"
-import UserMenu from "@/components/auth/user-menu"
 import ReapplyForm from "@/components/account/reapply-form"
 import PageShell from "@/components/ui/page-shell"
 import { canUseTools, reapplyAvailableAt } from "@/lib/auth/access"
@@ -29,7 +28,7 @@ const AccountPage = async () => {
   const availableAt = reapplyAvailableAt(user)
 
   return (
-    <PageShell crumbs={["Account"]} actions={<UserMenu/>}>
+    <PageShell crumbs={["Account"]}>
         {user.accessStatus === "pending" && (
           <>
             <Clock className="size-8 text-muted-foreground" aria-hidden="true"/>

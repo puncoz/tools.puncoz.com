@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Fragment, type FunctionComponent, type ReactNode } from "react"
 import Logo from "@/components/ui/logo"
-import ThemeToggle from "@/components/ui/theme-toggle"
+import ThemeMenu from "@/components/ui/theme-menu"
 import { CONTAINER } from "@/lib/ui/layout"
 import { cn } from "@/lib/utils"
 
@@ -79,9 +79,9 @@ const PageHeader: FunctionComponent<Props> = ({ crumbs = [], children }) => {
         </div>
 
         <div className="flex shrink-0 items-center gap-2">
-          {children}
+          <ThemeMenu/>
 
-          <ThemeToggle/>
+          {children}
         </div>
       </div>
     </header>

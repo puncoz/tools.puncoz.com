@@ -1,27 +1,22 @@
-import { LogOut, Settings, ShieldCheck } from "lucide-react"
+import { LogOut } from "lucide-react"
 import Link from "next/link"
+import AccountMenu from "@/components/auth/account-menu"
 import { buttonClasses } from "@/components/ui/button"
-import type { DbUser } from "@/db/schema"
+import { MENU_ITEM } from "@/components/ui/menu"
 import { signOutAction } from "@/lib/auth/actions"
 import { getAccountUser, isAdmin } from "@/lib/auth/current-user"
 
 /**
- * Initials rather than `profilePictureUrl`.
+ * The header's account control: a sign-in button, or the avatar menu.
  *
- * The picture is a remote URL on a WorkOS/Google host, which `next/image` will
- * not load without adding those hosts to `remotePatterns` — a config change that
- * has to be revisited every time an identity provider changes CDN. Initials are
- * self-contained and never 404.
+ * Stays a server component because both things it needs are server-only — the
+ * session, and the `ADMIN_EMAILS` check behind `isAdmin` — and hands the result
+ * to the client component that owns the open/close state.
+ *
+ * Sign-out is passed down as markup rather than a callback so it stays a real
+ * `<form>` posting to a server action, which keeps working if the JavaScript
+ * that powers the menu ever fails to load.
  */
-const initials = (user: DbUser): string => {
-  // flatMap rather than filter+map so the nullable names narrow to defined.
-  const fromName = [user.firstName, user.lastName]
-    .flatMap(part => part ? [part.charAt(0)] : [])
-    .join("")
-
-  return (fromName || user.email.charAt(0)).toUpperCase().slice(0, 2)
-}
-
 const UserMenu = async () => {
   // Rendered on pages that unapproved users can reach, so it reads the account
   // row rather than the approved-only helper.
@@ -35,46 +30,25 @@ const UserMenu = async () => {
     )
   }
 
+  const name = [user.firstName, user.lastName].filter(Boolean).join(" ")
+
   return (
-    <div className="flex items-center gap-2">
-      <span
-        title={user.email}
-        className="hidden size-8 shrink-0 items-center justify-center rounded-full bg-brand-subtle text-xs font-semibold text-brand sm:flex"
-      >
-        {initials(user)}
-      </span>
-
-      {isAdmin(user) && (
-        <Link
-          href="/admin/users"
-          title="People"
-          className={buttonClasses({ variant: "ghost", size: "icon" })}
-        >
-          <ShieldCheck className="size-4" aria-hidden="true"/>
-          <span className="sr-only">People</span>
-        </Link>
+    <AccountMenu
+      user={{
+        email: user.email,
+        name: name || null,
+        avatarUrl: user.profilePictureUrl,
+      }}
+      isAdmin={isAdmin(user)}
+      signOut={(
+        <form action={signOutAction}>
+          <button type="submit" role="menuitem" className={MENU_ITEM}>
+            <LogOut className="size-3.5" aria-hidden="true"/>
+            Sign out
+          </button>
+        </form>
       )}
-
-      <Link
-        href="/settings/storage"
-        title="Settings"
-        className={buttonClasses({ variant: "ghost", size: "icon" })}
-      >
-        <Settings className="size-4" aria-hidden="true"/>
-        <span className="sr-only">Settings</span>
-      </Link>
-
-      <form action={signOutAction}>
-        <button
-          type="submit"
-          title="Sign out"
-          className={buttonClasses({ variant: "ghost", size: "icon" })}
-        >
-          <LogOut className="size-4" aria-hidden="true"/>
-          <span className="sr-only">Sign out</span>
-        </button>
-      </form>
-    </div>
+    />
   )
 }
 

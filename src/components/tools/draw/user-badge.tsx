@@ -1,85 +1,58 @@
 "use client"
 
 import { useAuth } from "@workos-inc/authkit-nextjs/components"
-import { LogOut, Settings } from "lucide-react"
-import Link from "next/link"
+import { LogOut } from "lucide-react"
 import type { FunctionComponent } from "react"
-import { DROPDOWN_CLASSES, PANEL_CLASSES, useDismissableMenu } from "@/components/tools/draw/floating-menu"
-import ThemeToggle from "@/components/ui/theme-toggle"
-import { cn } from "@/lib/utils"
-
-const initialFor = (name: string | null, email: string): string =>
-  (name?.trim()?.[0] ?? email[0] ?? "?").toUpperCase()
+import AccountMenu from "@/components/auth/account-menu"
+import { MENU_ITEM } from "@/components/ui/menu"
 
 /**
  * Rendered into tldraw's `SharePanel` zone (top-right): who you are, and a way
  * to sign out without leaving the canvas.
  *
- * Reads the session through AuthKit's client context rather than props, since
- * tldraw instantiates these components itself and gives no way to pass data in.
+ * The same `AccountMenu` the site header uses, so the two stop drifting apart.
+ * Two differences, both forced by where this runs:
+ *
+ * - It reads the session through AuthKit's client context rather than props.
+ *   tldraw instantiates these components itself and gives no way to pass data
+ *   in, so a server component cannot hand anything down.
+ * - No People link. Admin status is a server-side check against `ADMIN_EMAILS`
+ *   and is not derivable here. Admins reach it from any page's header.
  */
 const UserBadge: FunctionComponent = () => {
   const { user, loading, signOut } = useAuth()
-  const { open, setOpen, ref } = useDismissableMenu<HTMLDivElement>()
 
   if (loading || !user) {
     return null
   }
 
-  const label = user.firstName ?? user.email
+  const name = [user.firstName, user.lastName].filter(Boolean).join(" ")
 
   return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen(current => !current)}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        aria-label={`Account: ${label}`}
-        title={label}
-        className={cn(PANEL_CLASSES, "flex size-9 items-center justify-center text-sm font-medium transition-colors hover:bg-accent")}
-      >
-        {initialFor(user.firstName, user.email)}
-      </button>
-
-      {open && (
-        <div role="menu" className={cn(DROPDOWN_CLASSES, "right-0 w-56")}>
-          <p className="truncate px-3 py-2 text-xs text-muted-foreground">{user.email}</p>
-
-          <div className="my-1 h-px bg-border"/>
-
-          {/* The canvas is full-bleed, so the header that normally carries this
-              is not on screen. Without it the theme is unreachable from the one
-              page where the difference is most obvious. */}
-          <div className="flex items-center justify-between gap-2 px-3 py-2">
-            <span className="text-sm">Theme</span>
-
-            <ThemeToggle/>
-          </div>
-
-          <div className="my-1 h-px bg-border"/>
-
-          <Link
-            href="/settings/storage"
-            role="menuitem"
-            className="flex w-full items-center gap-2 px-3 py-2 text-sm transition-colors hover:bg-accent"
-          >
-            <Settings className="size-3.5" aria-hidden="true"/>
-            Storage settings
-          </Link>
-
-          <button
-            type="button"
-            role="menuitem"
-            onClick={() => signOut({ returnTo: "/" })}
-            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-accent"
-          >
-            <LogOut className="size-3.5" aria-hidden="true"/>
-            Sign out
-          </button>
-        </div>
+    <AccountMenu
+      user={{
+        email: user.email,
+        name: name || null,
+        avatarUrl: user.profilePictureUrl,
+      }}
+      // tldraw's zones are pointer-events-none so the canvas underneath stays
+      // drawable; anything interactive has to opt back in.
+      className="pointer-events-auto"
+      // tldraw layers its own panels up to 99999, and the style panel sits in
+      // this same corner. See `floating-menu.ts` for the full note.
+      surfaceClassName="z-[100000]"
+      signOut={(
+        <button
+          type="button"
+          role="menuitem"
+          onClick={() => signOut({ returnTo: "/" })}
+          className={MENU_ITEM}
+        >
+          <LogOut className="size-3.5" aria-hidden="true"/>
+          Sign out
+        </button>
       )}
-    </div>
+    />
   )
 }
 

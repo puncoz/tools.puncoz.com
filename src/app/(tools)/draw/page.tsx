@@ -1,5 +1,4 @@
 import Link from "next/link"
-import UserMenu from "@/components/auth/user-menu"
 import DrawingGallery from "@/components/tools/draw/drawing-gallery"
 import TrashGallery from "@/components/tools/draw/trash-gallery"
 import PageShell from "@/components/ui/page-shell"
@@ -38,7 +37,7 @@ const DrawIndexPage = async ({ searchParams }: Props) => {
   const trashedCount = showTrash ? trashed.length : await countTrashedDrawings(user.id)
 
   return (
-    <PageShell crumbs={showTrash ? ["Draw", "Trash"] : ["Draw"]} actions={<UserMenu/>}>
+    <PageShell crumbs={showTrash ? ["Draw", "Trash"] : ["Draw"]}>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">

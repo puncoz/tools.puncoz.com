@@ -1,4 +1,5 @@
 import type { FunctionComponent, ReactNode } from "react"
+import UserMenu from "@/components/auth/user-menu"
 import PageHeader from "@/components/ui/page-header"
 import SiteFooter from "@/components/ui/site-footer"
 import { CONTAINER } from "@/lib/ui/layout"
@@ -24,17 +25,23 @@ import { cn } from "@/lib/utils"
 type Props = Readonly<{
   /** Breadcrumbs after "tools" — see `PageHeader`. */
   crumbs?: string[]
-  /** The header's right-hand cluster, usually `<UserMenu/>`. */
-  actions?: ReactNode
   /** Extra classes for the `<main>`, for the rare page that needs to narrow. */
   className?: string
   children: ReactNode
 }>
 
-const PageShell: FunctionComponent<Props> = ({ crumbs, actions, className, children }) => {
+const PageShell: FunctionComponent<Props> = ({ crumbs, className, children }) => {
   return (
     <div className="flex min-h-screen flex-col">
-      <PageHeader crumbs={crumbs}>{actions}</PageHeader>
+      <PageHeader crumbs={crumbs}>
+        {/* Rendered here rather than passed in per page: a sign-in button that
+            exists on five pages out of nine is exactly the scattered header this
+            replaced. The cost is that reading the session makes every page
+            dynamic — including the two legal documents, which used to
+            prerender. They are re-rendered per request anyway, since AuthKit's
+            proxy stamps `no-store` on everything it touches. */}
+        <UserMenu/>
+      </PageHeader>
 
       <main className={cn(CONTAINER, "flex-1 py-10 sm:py-14", className)}>
         {children}

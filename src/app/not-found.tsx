@@ -11,8 +11,8 @@ import PageShell from "@/components/ui/page-shell"
  * wording therefore has to cover "gone" and "never yours" without hinting which,
  * since saying "you do not have access" would leak that the drawing exists.
  *
- * No `<UserMenu/>`: it renders for signed-out visitors too, and this page has no
- * session of its own to read.
+ * The shell's header covers the signed-out case on its own — someone who
+ * followed a dead share link gets a sign-in button rather than an avatar.
  */
 const NotFoundPage: FunctionComponent = () => {
   return (

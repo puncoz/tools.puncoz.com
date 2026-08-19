@@ -1,4 +1,3 @@
-import UserMenu from "@/components/auth/user-menu"
 import InviteUserForm from "@/components/admin/invite-user-form"
 import UserRowActions from "@/components/admin/user-row-actions"
 import PageShell from "@/components/ui/page-shell"
@@ -44,7 +43,7 @@ const AdminUsersPage = async () => {
   const pendingCount = users.filter(user => user.accessStatus === "pending").length
 
   return (
-    <PageShell crumbs={["People"]} actions={<UserMenu/>}>
+    <PageShell crumbs={["People"]}>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">People</h1>

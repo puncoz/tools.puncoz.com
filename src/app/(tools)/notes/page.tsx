@@ -1,4 +1,3 @@
-import UserMenu from "@/components/auth/user-menu"
 import Editor from "@/components/editor"
 import EditorProvider from "@/components/providers/editor-provider"
 import PageShell from "@/components/ui/page-shell"
@@ -14,7 +13,7 @@ const NotesPage = async () => {
   await requireAuth()
 
   return (
-    <PageShell crumbs={["Editor"]} actions={<UserMenu/>}>
+    <PageShell crumbs={["Editor"]}>
       <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Editor</h1>
 
       <p className="mt-2 text-sm text-muted-foreground">
