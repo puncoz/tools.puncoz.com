@@ -1,4 +1,4 @@
-# tools.puncoz.com
+# Dev Tools (tools.puncoz.com)
 
 A personal collection of small web tools behind a single sign-in.
 
@@ -221,5 +221,17 @@ a `prebuild` hook, because Bun does not run those the way npm does.
 
 ## Working in this repo
 
-[`AGENTS.md`](AGENTS.md) carries instructions for coding agents. Design documents
-for each feature are in [`docs/superpowers/specs/`](docs/superpowers/specs).
+[`AGENTS.md`](AGENTS.md) is the contract — conventions, structure, patterns and
+invariants, written to be read in full before any change. It is the operating
+manual; this README is the rationale. Keep both current.
+
+Three kinds of document, deliberately distinct:
+
+| Where | What it holds |
+| --- | --- |
+| [`docs/adr/`](docs/adr) | **Decisions** — one per change, written *before* implementing, append-only. Start from [`0000-template.md`](docs/adr/0000-template.md). |
+| [`docs/superpowers/specs/`](docs/superpowers/specs) | Feature designs, for work large enough to need one |
+| [`docs/superpowers/plans/`](docs/superpowers/plans) | Implementation plans |
+
+Changes are reviewed as one whole diff and committed by hand, so nothing in this
+repo is committed automatically.
