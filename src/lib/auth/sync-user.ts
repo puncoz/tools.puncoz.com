@@ -72,6 +72,18 @@ const syncUser = async (workosUser: User): Promise<DbUser> => {
     return row
   }
 
+  // An upsert, not an insert: the selects above and this write are not atomic,
+  // and more than one render of the same request can be inside that window on a
+  // first sign-in — ADR 0005 measured five identity lookups for one navigation,
+  // and on a new account every one of them misses. A plain insert loses that
+  // race with `23505 users_workos_id_unique`, which would fail the very first
+  // page load of every new account.
+  //
+  // Arbitrated on `email` rather than on `workos_id`, which is the index that
+  // actually fires first: `workos_id` is nullable, and nulls are distinct, so an
+  // invite row would be duplicated rather than claimed. Conflicting on email
+  // makes the race resolve into the same "find the row with this email" lookup
+  // the invite hand-off already depends on. See ADR 0006.
   const [row] = await db
     .insert(users)
     .values({
@@ -79,6 +91,20 @@ const syncUser = async (workosUser: User): Promise<DbUser> => {
       workosId: workosUser.id,
       accessStatus: isAdminEmail(email) ? "approved" : "pending",
       accessReviewedAt: isAdminEmail(email) ? new Date() : null,
+    })
+    .onConflictDoUpdate({
+      target: users.email,
+      set: {
+        ...profile,
+        // Claims the row we lost the race to insert, exactly as the update
+        // branch above would have. `accessStatus` is deliberately not reset:
+        // reaching here means the row already exists, and demoting an approved
+        // account to `pending` because two renders collided would be a bug.
+        workosId: workosUser.id,
+        // `accessReviewedAt` is left alone for the same reason — the row that
+        // won the race carries its own review history.
+        ...(isAdminEmail(email) ? { accessStatus: "approved" as const } : {}),
+      },
     })
     .returning()
 

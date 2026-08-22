@@ -205,6 +205,16 @@ gate:
 anywhere else is a bug. Do not add access checks in layouts — a layout guard is
 theatre, since a pending user holds a valid session and can call the API directly.
 
+**`syncUser` must stay idempotent.** One request resolves the user more than once
+(layout, page, RSC requests), and on a first sign-in every one of those misses and
+races to write the row. The final write is therefore an upsert arbitrated on `email`,
+not an insert — a plain insert loses with `23505 users_workos_id_unique` and fails the
+first page load of every new account. `email` and not `workos_id`, which is nullable
+so an invite row would be duplicated rather than claimed. Its conflict branch must
+never write `accessStatus` unconditionally: that would demote an approved account to
+`pending` because two renders collided. See
+[ADR 0006](docs/adr/0006-make-first-sign-in-idempotent.md).
+
 **Every query is user-scoped.** Functions in `lib/*/queries.ts` take `userId` first
 and filter on it. Ids travel in URLs and are not secrets. Someone else's row answers
 **404, never 403** — a 403 confirms existence. The single deliberate exception is

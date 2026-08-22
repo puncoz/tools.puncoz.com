@@ -111,8 +111,19 @@ currently costs.
 
 - The expected result is roughly `800ms → ~20ms` of database latency per `/draw`
   render, and a similar collapse on every API route the canvas calls, which is the
-  interaction lag. The region change itself has **not** been measured — it cannot be
-  until it is deployed, and the figure above is arithmetic, not an observation.
+  interaction lag.
+- **Measured after deploying** (`x-vercel-id: hnd1::icn1::…` confirms the region), by
+  comparing a route that queries against one that does not:
+
+  ```
+  /privacy      (0 queries)          ttfb 250–282ms
+  /s/<invalid>  (1 lookup by token)  ttfb 276–366ms
+  ```
+
+  The query is no longer distinguishable from the noise; before the move the same
+  lookup cost a ~200ms Pacific round trip. The ~270ms that remains is the hop to the
+  edge plus the render, and is unrelated to this decision — note that a page with no
+  database access barely moved, which is exactly the shape a region fix should have.
 - The deduplication *was* measured, by counting `pg_stat_statements.calls` for the
   users-by-`workos_id` lookup across one identical navigation to `/draw?view=trash`,
   with and without the `cache()` wrapper:
@@ -141,10 +152,14 @@ currently costs.
 
 ## Follow-ups
 
-- The file-convention icon routes (`icon.png`, `apple-icon.png`) are served by a
+- ~~The file-convention icon routes (`icon.png`, `apple-icon.png`) are served by a
   function and return `no-store`, so they are re-fetched on every page load rather
-  than cached. Small, unrelated to this decision, and left alone deliberately —
-  raising it rather than fixing it in passing.
+  than cached.~~ **Wrong, corrected in [ADR 0007](0007-redirect-favicon-ico-to-the-icon-route.md).**
+  Those routes are cached at the edge (`x-vercel-cache: HIT`, 51ms, 304 on
+  revalidation) and never touch a function. The measurement behind this claim was of
+  `/favicon.ico`, which is a 404 page, not an icon. Struck rather than deleted,
+  because the mistake is the useful part: it came from measuring an adjacent URL and
+  assuming it stood for the ones in the document.
 - No measurement exists for how much the WorkOS session refresh in `src/proxy.ts`
   contributes, since it only fires for authenticated requests and the numbers above
   were taken signed-out. Worth measuring after this lands, when it will be a larger
@@ -155,4 +170,5 @@ currently costs.
   concurrent first-sign-in renders could collide on the unique email index. The
   `cache()` added here narrows the window but does not close it, because a miss is
   cached as a miss. Untouched because it is a correctness bug in a different area
-  than this decision, and it should be fixed on its own terms.
+  than this decision, and it should be fixed on its own terms. **Since fixed on those
+  terms in [ADR 0006](0006-make-first-sign-in-idempotent.md).**
