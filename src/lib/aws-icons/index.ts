@@ -8,6 +8,10 @@ import catalogue from "@/lib/aws-icons/catalogue.json" with { type: "json" }
  * artwork — typecheck and lint have to work without running the script. The SVGs
  * themselves are copied into a gitignored `public/aws-icons/` at build time.
  *
+ * Everything the package ships is included, unlike the curated Cloudflare
+ * catalogue: `aws-icons` contains architecture icons and nothing else, so there
+ * is nothing to filter out.
+ *
  * Shared by client and server, so no server-only imports.
  */
 
@@ -18,30 +22,7 @@ type AwsIcon = {
 
 const AWS_ICONS: readonly AwsIcon[] = catalogue
 
-const awsIconsBySlug = new Map(AWS_ICONS.map(icon => [icon.slug, icon]))
-
 const awsIconUrl = (slug: string): string => `/aws-icons/${slug}.svg`
 
-const awsIconName = (slug: string): string => awsIconsBySlug.get(slug)?.name ?? slug
-
-/**
- * Every term must match, so extra words narrow rather than widen — the same rule
- * the tool directory and the drawings gallery use.
- *
- * Matches the slug as well as the name so that "ec2" finds "Amazon EC2" even
- * though the display name spaces it differently.
- */
-const matchesAwsIcon = (icon: AwsIcon, query: string): boolean => {
-  const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
-
-  if (terms.length === 0) {
-    return true
-  }
-
-  const haystack = `${icon.name} ${icon.slug}`.toLowerCase()
-
-  return terms.every(term => haystack.includes(term))
-}
-
-export { AWS_ICONS, awsIconName, awsIconUrl, matchesAwsIcon }
+export { AWS_ICONS, awsIconUrl }
 export type { AwsIcon }

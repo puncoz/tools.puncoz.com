@@ -42,5 +42,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Copied from the aws-icons dependency at build time; artwork is not committed.
+# Generated from the icon dependencies at build time; artwork is not committed.
 /public/aws-icons/
+/public/cloudflare-icons/

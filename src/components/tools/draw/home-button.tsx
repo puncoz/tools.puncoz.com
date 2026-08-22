@@ -4,7 +4,10 @@ import { LayoutGrid } from "lucide-react"
 import Link from "next/link"
 import type { FunctionComponent } from "react"
 import { DefaultMenuPanel } from "tldraw"
-import AwsIconPicker from "@/components/tools/draw/aws-icon-picker"
+import IconPicker from "@/components/tools/draw/icon-picker"
+import { AWS_ICON_TYPE } from "@/components/tools/draw/shapes/aws-icon-shape-util"
+import { CLOUDFLARE_ICON_TYPE } from "@/components/tools/draw/shapes/cloudflare-icon-shape-util"
+import { AWS_ICON_SET, CLOUDFLARE_ICON_SET } from "@/lib/icon-sets"
 
 /**
  * Rendered into tldraw's `MenuPanel` zone (top-left).
@@ -29,7 +32,9 @@ const HomeButton: FunctionComponent = () => (
 
     <DefaultMenuPanel/>
 
-    <AwsIconPicker/>
+    <IconPicker set={AWS_ICON_SET} shapeType={AWS_ICON_TYPE}/>
+
+    <IconPicker set={CLOUDFLARE_ICON_SET} shapeType={CLOUDFLARE_ICON_TYPE}/>
   </div>
 )
 

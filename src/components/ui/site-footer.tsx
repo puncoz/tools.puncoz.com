@@ -23,6 +23,8 @@ const SiteFooter: FunctionComponent = () => {
         <ToolCredits/>
 
         <p className="text-xs text-muted-foreground">
+          <Link href="/credits" className="underline-offset-4 hover:text-foreground hover:underline">Credits</Link>
+          {" · "}
           <Link href="/privacy" className="underline-offset-4 hover:text-foreground hover:underline">Privacy</Link>
           {" · "}
           <Link href="/terms" className="underline-offset-4 hover:text-foreground hover:underline">Terms</Link>

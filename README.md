@@ -4,7 +4,7 @@ A personal collection of small web tools behind a single sign-in.
 
 | Tool | Route | Status |
 | --- | --- | --- |
-| **Draw** — infinite tldraw canvas for diagrams and sketches, with AWS architecture icons | `/draw` | live |
+| **Draw** — infinite tldraw canvas for diagrams and sketches, with AWS and Cloudflare icons | `/draw` | live |
 | **Editor** — Notion-style rich text notes | `/notes` | soon |
 
 Tools are declared in [`src/lib/tools.ts`](src/lib/tools.ts). The landing page
@@ -62,13 +62,13 @@ licence key is deliberately *not* in that required list.
 
 | Script | Purpose |
 | --- | --- |
-| `bun run dev` | Build AWS icons, then start the dev server |
-| `bun run build` | Build AWS icons, then build for production |
+| `bun run dev` | Build the icon sets, then start the dev server |
+| `bun run build` | Build the icon sets, then build for production |
 | `bun run lint` | ESLint |
 | `bun run db:generate` | Generate a migration from schema changes |
 | `bun run db:migrate` | Apply pending migrations |
 | `bun run db:studio` | Drizzle Studio |
-| `bun run icons:build` | Regenerate `public/aws-icons/` on its own |
+| `bun run icons:build` | Regenerate `public/aws-icons/` and `public/cloudflare-icons/` |
 
 ## Notable design decisions
 
@@ -161,15 +161,44 @@ denied-then-granted flip, so the first pageview is not counted twice. The privac
 policy describes exactly this — **if you change the consent behaviour, change the
 policy with it.**
 
-**Only three pages are indexable.** `sitemap.ts` lists `/`, `/privacy` and
-`/terms`; everything else needs a session or is disallowed in `robots.ts`.
+**Only four pages are indexable.** `sitemap.ts` lists `/`, `/privacy`, `/terms`
+and `/credits`; everything else needs a session or is disallowed in `robots.ts`.
 Listing a route a crawler gets redirected away from is worse than omitting it.
 
-**AWS icons are generated, not committed.** `scripts/build-aws-icons.ts` copies
-299 service icons out of the `aws-icons` dependency into a gitignored
+**Attribution is derived and enforced.** `/credits` names the artwork the site
+renders — AWS and Cloudflare icons, Lucide, tldraw — with the terms each is used
+under, and reproduces the notices two of those licences require. It is generated
+from `src/lib/credits.ts`, which `lib/icon-sets.ts` also reads: an icon set
+without a matching credit throws at module load, so artwork cannot ship
+uncredited. Each icon picker carries a one-line credit linking to its section,
+because the canvas and the share view have no footer and are the only places the
+artwork is actually handled.
+
+**Icon artwork is generated, not committed.** `scripts/build-aws-icons.ts`
+copies 299 service icons out of the `aws-icons` dependency into a gitignored
 `public/aws-icons/`. The artwork is AWS's — permitted for drawing architecture
 diagrams, with restrictions on redistribution — so it arrives as a dependency
 rather than living in this repository.
+
+**Cloudflare icons come from a UI kit, so they are curated and coloured.**
+`scripts/build-cloudflare-icons.tsx` renders 105 icons out of
+`@cloudflare/component-icon` (official, BSD-3-Clause) into
+`public/cloudflare-icons/`. Three things differ from the AWS pipeline and each is
+forced by the source: the package ships React components rather than SVG files,
+so they are rendered rather than copied; it is a general interface kit rather
+than an icon set, so `src/lib/cloudflare-icons/products.json` is an allowlist and
+anything outside it never reaches the picker; and the art is monochrome, so
+Cloudflare's orange is baked in at build time. The fill goes on an inner `<g>`
+rather than the root `<svg>` — exports strip the outer element, and a fill living
+there vanishes from every thumbnail. Rationale in
+[`docs/adr/0003-cloudflare-icons.md`](docs/adr/0003-cloudflare-icons.md).
+
+**One icon shape, one instance per set.** `shapes/icon-shape-util.tsx` holds the
+whole implementation; `aws-icon` and `cloudflare-icon` are thin subclasses that
+supply a type string, a migration sequence and a URL. Both must stay registered
+in `shapes/index.ts`, which both canvases import — a set registered by the editor
+and not the share view produces a diagram that works for its author and fails for
+everyone holding the link.
 
 ## Database
 

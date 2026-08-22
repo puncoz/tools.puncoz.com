@@ -1,4 +1,5 @@
 import { AwsIconShapeUtil } from "@/components/tools/draw/shapes/aws-icon-shape-util"
+import { CloudflareIconShapeUtil } from "@/components/tools/draw/shapes/cloudflare-icon-shape-util"
 
 /**
  * Custom shape utils, registered by EVERY store that loads a drawing.
@@ -11,10 +12,12 @@ import { AwsIconShapeUtil } from "@/components/tools/draw/shapes/aws-icon-shape-
  *   - `components/tools/draw-canvas.tsx`        (owner, editable)
  *   - `components/tools/draw/shared-canvas.tsx` (public share link, read-only)
  *
- * If they ever drift, a diagram containing AWS icons loads fine for its author
- * and fails for everyone holding the share link — a bug that only ever appears
- * on someone else's screen.
+ * If they ever drift, a diagram containing provider icons loads fine for its
+ * author and fails for everyone holding the share link — a bug that only ever
+ * appears on someone else's screen. Every set added here has to be added to both
+ * call sites, which is why they share this array rather than listing utils
+ * themselves.
  */
-const customShapeUtils = [AwsIconShapeUtil]
+const customShapeUtils = [AwsIconShapeUtil, CloudflareIconShapeUtil]
 
 export { customShapeUtils }

@@ -1,37 +1,45 @@
 "use client"
 
 import { Search } from "lucide-react"
-import { type FunctionComponent, useMemo, useRef, useState } from "react"
+import Link from "next/link"
+import { type FunctionComponent, useMemo, useState } from "react"
 import { createShapeId, toRichText, useEditor } from "tldraw"
 import { DROPDOWN_CLASSES, PANEL_CLASSES, useDismissableMenu } from "@/components/tools/draw/floating-menu"
 import {
-  AWS_ICON_TYPE,
   DEFAULT_HEIGHT,
   DEFAULT_WIDTH,
-  type AwsIconShape,
-} from "@/components/tools/draw/shapes/aws-icon-shape-util"
-import { AWS_ICONS, awsIconUrl, matchesAwsIcon } from "@/lib/aws-icons"
+  type AnyIconShape,
+} from "@/components/tools/draw/shapes/icon-shape-util"
+import { sentence } from "@/lib/credits"
+import { matchesIcon, type IconSet } from "@/lib/icon-sets"
 import { cn } from "@/lib/utils"
 
 /**
- * Inserts AWS service icons onto the canvas.
+ * Inserts provider icons onto the canvas — one instance per icon set.
  *
- * Search-first over a flat A–Z list rather than grouped by AWS category: the
- * icon package carries no category data, its upstream metadata carries none
- * either, and the categories cannot be recovered from the artwork — all 300
- * service icons share just 7 fill colours, reused across AWS's 26 published
- * categories. Grouping would mean inventing a mapping that drifts on every
- * package update. Service names are distinctive enough that search wins anyway.
+ * Search-first over a flat A–Z list rather than grouped by the provider's own
+ * categories: the AWS package carries no category data and the categories cannot
+ * be recovered from the artwork, all 300 service icons sharing just 7 fill
+ * colours across AWS's 26 published categories. Grouping would mean inventing a
+ * mapping that drifts on every package update, and service names are distinctive
+ * enough that search wins anyway. Cloudflare's set is small enough not to need it.
  */
-const AwsIconPicker: FunctionComponent = () => {
+
+type Props = Readonly<{
+  set: IconSet
+  /** The shape type this set inserts. Paired here rather than in `lib/icon-sets`,
+      which must not import from `components/`. */
+  shapeType: AnyIconShape["type"]
+}>
+
+const IconPicker: FunctionComponent<Props> = ({ set, shapeType }) => {
   const editor = useEditor()
   const { open, setOpen, ref } = useDismissableMenu<HTMLDivElement>()
   const [query, setQuery] = useState("")
-  const searchRef = useRef<HTMLInputElement>(null)
 
   const visible = useMemo(
-    () => AWS_ICONS.filter(icon => matchesAwsIcon(icon, query)),
-    [query],
+    () => set.icons.filter(icon => matchesIcon(icon, query)),
+    [set, query],
   )
 
   const insert = (slug: string, name: string) => {
@@ -39,9 +47,9 @@ const AwsIconPicker: FunctionComponent = () => {
     // off-screen on a panned canvas.
     const { x, y } = editor.getViewportPageBounds().center
 
-    editor.createShape<AwsIconShape>({
+    editor.createShape<AnyIconShape>({
       id: createShapeId(),
-      type: AWS_ICON_TYPE,
+      type: shapeType,
       x: x - DEFAULT_WIDTH / 2,
       y: y - DEFAULT_HEIGHT / 2,
       props: {
@@ -63,11 +71,11 @@ const AwsIconPicker: FunctionComponent = () => {
         onClick={() => setOpen(current => !current)}
         aria-haspopup="dialog"
         aria-expanded={open}
-        title="AWS icons"
-        aria-label="AWS icons"
+        title={set.title}
+        aria-label={set.title}
         className={cn(PANEL_CLASSES, "flex size-9 items-center justify-center text-[11px] font-semibold tracking-tight transition-colors hover:bg-accent")}
       >
-        AWS
+        {set.label}
       </button>
 
       {open && (
@@ -80,18 +88,17 @@ const AwsIconPicker: FunctionComponent = () => {
 
             <input
               autoFocus
-              ref={searchRef}
               type="search"
               value={query}
               onChange={event => setQuery(event.target.value)}
-              placeholder="Search 300 AWS services..."
-              aria-label="Search AWS services"
+              placeholder={`Search ${set.icons.length} ${set.label} icons...`}
+              aria-label={`Search ${set.title}`}
               className="w-full rounded-md border border-border bg-background py-1.5 pl-8 pr-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             />
           </div>
 
           <p aria-live="polite" className="sr-only">
-            {visible.length} {visible.length === 1 ? "service" : "services"} found
+            {visible.length} {visible.length === 1 ? "icon" : "icons"} found
           </p>
 
           {visible.length > 0
@@ -108,7 +115,7 @@ const AwsIconPicker: FunctionComponent = () => {
                     {/* eslint-disable-next-line @next/next/no-img-element -- static
                         same-origin SVG; the Next optimizer cannot process SVG. */}
                     <img
-                      src={awsIconUrl(icon.slug)}
+                      src={set.urlFor(icon.slug)}
                       alt=""
                       loading="lazy"
                       className="size-8"
@@ -123,13 +130,28 @@ const AwsIconPicker: FunctionComponent = () => {
             )
             : (
               <p className="mt-3 px-1 pb-2 text-center text-xs text-muted-foreground">
-                No services match <span className="font-medium text-foreground">{query}</span>.
+                No icons match <span className="font-medium text-foreground">{query}</span>.
               </p>
             )}
+
+          {/* The canvas is full-bleed and has no footer, and neither does the
+              share view — so this is the only place the person placing the
+              artwork is told whose it is. Anchored to the matching section
+              rather than the top of the page. */}
+          <p className="mt-2 border-t border-border px-1 pt-2 text-[10px] leading-tight text-muted-foreground">
+            Artwork by {sentence(set.credit.holder)}{" "}
+            <Link
+              href={`/credits#${set.credit.id}`}
+              target="_blank"
+              className="underline underline-offset-2 hover:text-foreground"
+            >
+              Credits
+            </Link>
+          </p>
         </div>
       )}
     </div>
   )
 }
 
-export default AwsIconPicker
+export default IconPicker

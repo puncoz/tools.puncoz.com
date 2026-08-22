@@ -1,0 +1,422 @@
+[
+  {
+    "slug": "cloudflare-access",
+    "name": "Access"
+  },
+  {
+    "slug": "account-analytics",
+    "name": "Account Analytics"
+  },
+  {
+    "slug": "ai-audit",
+    "name": "AI Audit"
+  },
+  {
+    "slug": "chart",
+    "name": "Analytics"
+  },
+  {
+    "slug": "api",
+    "name": "API"
+  },
+  {
+    "slug": "code-api",
+    "name": "API Code"
+  },
+  {
+    "slug": "api-security",
+    "name": "API Shield"
+  },
+  {
+    "slug": "cloudflare-security-application",
+    "name": "Application Security"
+  },
+  {
+    "slug": "applications",
+    "name": "Applications"
+  },
+  {
+    "slug": "cloudflare-argo-smart-routing",
+    "name": "Argo Smart Routing"
+  },
+  {
+    "slug": "traffic-attack-browser",
+    "name": "Attack Traffic"
+  },
+  {
+    "slug": "auto-rag",
+    "name": "AutoRAG"
+  },
+  {
+    "slug": "security-bots",
+    "name": "Bot Management"
+  },
+  {
+    "slug": "office-branch",
+    "name": "Branch Office"
+  },
+  {
+    "slug": "internet-browser",
+    "name": "Browser"
+  },
+  {
+    "slug": "cloudflare-browser",
+    "name": "Browser Isolation"
+  },
+  {
+    "slug": "byoip",
+    "name": "BYOIP"
+  },
+  {
+    "slug": "calls",
+    "name": "Calls"
+  },
+  {
+    "slug": "captcha",
+    "name": "CAPTCHA"
+  },
+  {
+    "slug": "zerotrust-casb",
+    "name": "CASB"
+  },
+  {
+    "slug": "cloud-security",
+    "name": "Cloud Security"
+  },
+  {
+    "slug": "teams",
+    "name": "Cloudflare for Teams"
+  },
+  {
+    "slug": "code",
+    "name": "Code"
+  },
+  {
+    "slug": "connector",
+    "name": "Connector"
+  },
+  {
+    "slug": "d1",
+    "name": "D1"
+  },
+  {
+    "slug": "dlp",
+    "name": "Data Loss Prevention"
+  },
+  {
+    "slug": "table",
+    "name": "Database Table"
+  },
+  {
+    "slug": "ddos-attack",
+    "name": "DDoS Attack"
+  },
+  {
+    "slug": "device-desktop",
+    "name": "Desktop"
+  },
+  {
+    "slug": "cloudflare-dex",
+    "name": "Digital Experience Monitoring"
+  },
+  {
+    "slug": "reliability-dns",
+    "name": "DNS"
+  },
+  {
+    "slug": "workers-durable-objects",
+    "name": "Durable Objects"
+  },
+  {
+    "slug": "edgeworker",
+    "name": "Edge Worker"
+  },
+  {
+    "slug": "mail",
+    "name": "Email"
+  },
+  {
+    "slug": "email-forwarding",
+    "name": "Email Routing"
+  },
+  {
+    "slug": "cloudflare-email-security",
+    "name": "Email Security"
+  },
+  {
+    "slug": "security-fingerprint",
+    "name": "Fingerprint"
+  },
+  {
+    "slug": "firewall-rules",
+    "name": "Firewall Rules"
+  },
+  {
+    "slug": "flowchart",
+    "name": "Flow"
+  },
+  {
+    "slug": "gateway",
+    "name": "Gateway"
+  },
+  {
+    "slug": "globe",
+    "name": "Global Network"
+  },
+  {
+    "slug": "hyperdrive",
+    "name": "Hyperdrive"
+  },
+  {
+    "slug": "image",
+    "name": "Images"
+  },
+  {
+    "slug": "cloud-internet",
+    "name": "Internet"
+  },
+  {
+    "slug": "key",
+    "name": "Key"
+  },
+  {
+    "slug": "device-laptop",
+    "name": "Laptop"
+  },
+  {
+    "slug": "reliability-load-balancer",
+    "name": "Load Balancing"
+  },
+  {
+    "slug": "lock",
+    "name": "Lock"
+  },
+  {
+    "slug": "edge-log-delivery",
+    "name": "Logpush"
+  },
+  {
+    "slug": "logs",
+    "name": "Logs"
+  },
+  {
+    "slug": "machine-learning-contextual",
+    "name": "Machine Learning"
+  },
+  {
+    "slug": "magic-firewall",
+    "name": "Magic Firewall"
+  },
+  {
+    "slug": "magic-network-monitoring",
+    "name": "Magic Network Monitoring"
+  },
+  {
+    "slug": "magic-transit",
+    "name": "Magic Transit"
+  },
+  {
+    "slug": "cloudflare-magic-wan",
+    "name": "Magic WAN"
+  },
+  {
+    "slug": "mcp-server",
+    "name": "MCP Server"
+  },
+  {
+    "slug": "device-mobile",
+    "name": "Mobile Device"
+  },
+  {
+    "slug": "cloud-multi",
+    "name": "Multi-Cloud"
+  },
+  {
+    "slug": "network",
+    "name": "Network"
+  },
+  {
+    "slug": "network-analytics",
+    "name": "Network Analytics"
+  },
+  {
+    "slug": "cloudflare-security-network",
+    "name": "Network Security"
+  },
+  {
+    "slug": "network-security",
+    "name": "Network Security"
+  },
+  {
+    "slug": "server-origin",
+    "name": "Origin Server"
+  },
+  {
+    "slug": "pages",
+    "name": "Pages"
+  },
+  {
+    "slug": "performance-cloud",
+    "name": "Performance"
+  },
+  {
+    "slug": "phishing",
+    "name": "Phishing Protection"
+  },
+  {
+    "slug": "cloudflare-pipelines",
+    "name": "Pipelines"
+  },
+  {
+    "slug": "platform-apps",
+    "name": "Platform Apps"
+  },
+  {
+    "slug": "pub-sub",
+    "name": "Pub/Sub"
+  },
+  {
+    "slug": "queues",
+    "name": "Queues"
+  },
+  {
+    "slug": "r2",
+    "name": "R2"
+  },
+  {
+    "slug": "registrar",
+    "name": "Registrar"
+  },
+  {
+    "slug": "zero-trust-risk-scoring",
+    "name": "Risk Scoring"
+  },
+  {
+    "slug": "router",
+    "name": "Router"
+  },
+  {
+    "slug": "cloudflare-ruleset-engine",
+    "name": "Ruleset Engine"
+  },
+  {
+    "slug": "script",
+    "name": "Script"
+  },
+  {
+    "slug": "product-security-center",
+    "name": "Security Center"
+  },
+  {
+    "slug": "shield",
+    "name": "Shield"
+  },
+  {
+    "slug": "spectrum",
+    "name": "Spectrum"
+  },
+  {
+    "slug": "certificate",
+    "name": "SSL/TLS Certificate"
+  },
+  {
+    "slug": "stream",
+    "name": "Stream"
+  },
+  {
+    "slug": "device-tablet",
+    "name": "Tablet"
+  },
+  {
+    "slug": "tail-worker",
+    "name": "Tail Worker"
+  },
+  {
+    "slug": "time",
+    "name": "Time"
+  },
+  {
+    "slug": "trace",
+    "name": "Trace"
+  },
+  {
+    "slug": "turnstile",
+    "name": "Turnstile"
+  },
+  {
+    "slug": "user",
+    "name": "User"
+  },
+  {
+    "slug": "user-multi",
+    "name": "Users"
+  },
+  {
+    "slug": "vectorize",
+    "name": "Vectorize"
+  },
+  {
+    "slug": "virtual-machine",
+    "name": "Virtual Machine"
+  },
+  {
+    "slug": "security-waf",
+    "name": "WAF"
+  },
+  {
+    "slug": "waiting-room",
+    "name": "Waiting Room"
+  },
+  {
+    "slug": "warp",
+    "name": "WARP"
+  },
+  {
+    "slug": "web-analytics",
+    "name": "Web Analytics"
+  },
+  {
+    "slug": "web3",
+    "name": "Web3"
+  },
+  {
+    "slug": "workers-pages",
+    "name": "Workers & Pages"
+  },
+  {
+    "slug": "workers-constellation",
+    "name": "Workers AI"
+  },
+  {
+    "slug": "workers-bundled",
+    "name": "Workers Bundled"
+  },
+  {
+    "slug": "workers-for-platforms",
+    "name": "Workers for Platforms"
+  },
+  {
+    "slug": "workers-kv",
+    "name": "Workers KV"
+  },
+  {
+    "slug": "workers-unbound",
+    "name": "Workers Unbound"
+  },
+  {
+    "slug": "wrangler",
+    "name": "Wrangler"
+  },
+  {
+    "slug": "zaraz",
+    "name": "Zaraz"
+  },
+  {
+    "slug": "cloudflare-zero-trust",
+    "name": "Zero Trust"
+  },
+  {
+    "slug": "zerotrust-networks",
+    "name": "Zero Trust Networks"
+  }
+]

@@ -81,7 +81,7 @@ tool sits behind one sign-in. Tools are declared in **`src/lib/tools.ts`**; the
 landing grid, search index and category filters all derive from that list, so adding
 a tool needs no UI change.
 
-Live: **Draw** (`/draw`), a tldraw canvas with AWS architecture icons, per-drawing
+Live: **Draw** (`/draw`), a tldraw canvas with AWS and Cloudflare icons, per-drawing
 sharing, soft delete and per-account object storage. Planned: **Notes** (`/notes`).
 
 `README.md` carries the *rationale* for the significant decisions — palette, sharing
@@ -125,7 +125,7 @@ Specifics that catch every agent:
 ```
 src/
   app/                    routes only — thin; logic belongs in lib/
-    (legal)/              privacy, terms          — public
+    (legal)/              privacy, terms, credits — public
     (tools)/              draw, notes, settings   — layout requires a session
     admin/                user review             — requireAdmin()
     account/              access status / reapply — reachable when NOT approved
@@ -140,13 +140,14 @@ src/
   config/                 THE ONLY place that reads process.env
   db/                     schema/ + the connection
   lib/                    all real logic, grouped by domain
-    auth/ drawings/ storage/ users/ tldraw/ crypto/ ui/ aws-icons/
+    auth/ drawings/ storage/ users/ tldraw/ crypto/ ui/
+    aws-icons/ cloudflare-icons/ icon-sets.ts credits.ts
   proxy.ts                AuthKit session refresh + matcher
   instrumentation.ts      boot-time env validation
 drizzle/                  SQL migrations (generated, then renamed by hand)
 docs/adr/                 decision records            ← new work starts here
 docs/superpowers/         specs & plans
-scripts/                  build-time generators (AWS icons, brand assets)
+scripts/                  build-time generators (icon sets, brand assets)
 ```
 
 **Where does new code go?** Data access → `lib/<domain>/queries.ts`. Pure helpers →
@@ -234,6 +235,18 @@ z-index, because tldraw's own panels stack to 99999.
 
 **Menus** reuse `useDismissableMenu` from `components/ui/menu.ts` — never hand-roll
 outside-click handling.
+
+**Provider icon sets** (AWS, Cloudflare) are one implementation with an instance
+each. To add a third: a build script writing SVGs into a gitignored
+`public/<set>-icons/` plus a committed `catalogue.json`, a catalogue module under
+`lib/<set>-icons/`, an entry in `lib/icon-sets.ts`, a subclass of
+`shapes/icon-shape-util.tsx` supplying a type string and URL, registration in
+`shapes/index.ts`, an entry in `lib/credits.ts` (the set will not construct
+without one), and an `<IconPicker>` in `home-button.tsx`. No shape logic and
+no picker code should be written. Two traps, both silent: a set registered in
+`shapes/index.ts` reaches *both* canvases or shared drawings break for viewers
+only, and the exporter strips an icon's root `<svg>`, so a `fill` must sit on an
+inner element or it disappears from every thumbnail while looking fine on canvas.
 
 **Tailwind v4 gotcha:** a descendant selector (`[&_p]:…`, specificity 0,1,1)
 outranks an element-level utility (0,1,0). Dark mode is a class on `<html>` via

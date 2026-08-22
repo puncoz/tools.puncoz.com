@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next"
 import { clientConfig } from "@/config/client"
 
 /**
- * Three pages, and that is the honest total.
+ * Four pages, and that is the honest total.
  *
  * Everything else either needs a session — the tools, settings, account, admin —
  * or is explicitly disallowed in `robots.ts` because it must never be indexed:
@@ -20,6 +20,7 @@ const sitemap = (): MetadataRoute.Sitemap => {
     { url: base, changeFrequency: "monthly", priority: 1 },
     { url: `${base}/privacy`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/terms`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/credits`, changeFrequency: "yearly", priority: 0.3 },
   ]
 }
 
