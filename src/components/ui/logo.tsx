@@ -23,7 +23,21 @@ import { cn } from "@/lib/utils"
  * Both variants are rendered and one is hidden by CSS rather than picking in
  * JavaScript: the theme class is on `<html>` before paint, so this swaps with no
  * hydration pass and no flash of the wrong logo.
+ *
+ * `priority` stays on both despite one being hidden, and that is deliberate:
+ * which variant is painted is decided by the theme class before first paint, so
+ * demoting either would risk a logo-shaped hole for half the users. It is only
+ * affordable because the sources are now 256px — see ADR 0008, where these were
+ * measured at 266KB the pair, preloaded ahead of the CSS on every route.
  */
+
+/**
+ * The box the wordmark is painted into — `h-7 w-auto` on a 256x112 source is
+ * 64x28. Without this, a static import makes `next/image` size the srcSet
+ * against the viewport rather than the element, and it picks the largest
+ * candidate it has. Must stay in step with the `h-7` below.
+ */
+const DISPLAY_WIDTH = "64px"
 
 type Props = Readonly<{
   /** Renders as a link home unless this is false — the landing page is home. */
@@ -37,6 +51,7 @@ const Wordmark: FunctionComponent<{ className?: string }> = ({ className }) => (
       src={wordmark}
       alt={clientConfig.app.name}
       priority
+      sizes={DISPLAY_WIDTH}
       className="h-7 w-auto dark:hidden"
     />
 
@@ -45,6 +60,7 @@ const Wordmark: FunctionComponent<{ className?: string }> = ({ className }) => (
       alt=""
       aria-hidden="true"
       priority
+      sizes={DISPLAY_WIDTH}
       className="hidden h-7 w-auto dark:block"
     />
   </span>

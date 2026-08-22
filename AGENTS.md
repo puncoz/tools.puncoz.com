@@ -117,6 +117,14 @@ Specifics that catch every agent:
 - **Route handlers** export `const GET = async (...)` — typed `Promise<Response>`.
 - **`metadataBase`, `robots`, `sitemap`, `manifest`, `opengraph-image`** are all
   file conventions under `src/app/`. They already exist; extend rather than replace.
+- **`next/dynamic` with `ssr: false` throws in a Server Component**, and a Server
+  Component's dynamic import of a Client Component does not code split at all. Both
+  are stated in `node_modules/next/dist/docs/01-app/02-guides/lazy-loading.md`. Any
+  lazy boundary therefore needs a thin `"use client"` loader module — see
+  `components/tools/draw-canvas-loader.tsx`.
+- **`after()` from `next/server`** is how work runs past the response. A floating
+  promise is not equivalent: the instance can be frozen the moment the response is
+  sent.
 
 ---
 
@@ -135,7 +143,8 @@ src/
   assets/css/main.css     Tailwind v4 config, palette, base layer
   components/
     ui/                   generic primitives — button, menu, page-shell, theme-menu
-    tools/draw/           canvas chrome, hooks, shapes
+    tools/*-canvas-loader  client modules that lazy-load tldraw behind a skeleton
+    tools/draw/           canvas chrome, hooks, shapes, skeletons
     analytics/ auth/ admin/ account/ settings/ seo/
   config/                 THE ONLY place that reads process.env
   db/                     schema/ + the connection
@@ -229,6 +238,13 @@ paths remove rows, and both refuse anything not already trashed.
 state, effects, or browser APIs. Keep client components leaf-ward — fetch on the
 server and pass data down.
 
+**Don't hold the response open for data.** `/draw` renders its shell synchronously
+and streams the count line, the trash tabs and the gallery behind three `<Suspense>`
+boundaries, all reading one `cache()`d loader so it stays one set of queries (ADR
+0010). **The auth call stays outside every boundary** — `requireDbUser()` redirects,
+and a redirect cannot be issued once the shell has been flushed. A fallback must
+match the real thing's dimensions, or the TTFB win is paid back as layout shift.
+
 **Deduping a query between metadata and page:** wrap it in React `cache()` and call
 it with identical arguments from both. The same applies between a **layout and the
 page inside it** — `(tools)/layout.tsx` and every page under it both call
@@ -245,6 +261,29 @@ way is per request, not shared across them.
 `useSyncExternalStore` — `subscribe*` / `get*Snapshot` / `getServer*Snapshot`. Do
 not reach for `useState` + `useEffect`; it trips `react-hooks/set-state-in-effect`
 and flashes on load. See `lib/ui/theme.ts` as the reference implementation.
+
+**The canvas is loaded lazily, behind a skeleton.** `/draw/[id]` and `/s/[token]`
+render one component and nothing else, so before ADR 0009 their FCP *was* tldraw
+finishing — ~780KB of JS plus a second render-blocking stylesheet, with nothing on
+the page to paint sooner. Each page now renders a `*-canvas-loader.tsx` client
+module, which `dynamic(..., { ssr: false })`s the real canvas behind
+`canvas-skeleton.tsx`. **The skeleton must stay in visual step with the real
+chrome** — nothing enforces it, and the symptom of drift is a jump when the canvas
+appears.
+
+**Images are served at the size they are displayed.** A `next/image` with a static
+import and no `sizes` picks the top of the srcSet; the wordmark shipped 266KB at
+3840px to paint a 64px logo, preloaded ahead of the CSS on every route (ADR 0008).
+Sources are resized in `scripts/build-brand-assets.ts` *and* given a `sizes` — the
+resize is the guard that a component edit cannot undo. Note that `priority` implies
+`eager`, and an eager `display: none` image **is** fetched, so the light/dark pairs
+this codebase uses cost double whenever one is marked `priority`.
+
+**A route handler's `Cache-Control` does reach the browser.** Several comments used
+to claim AuthKit's proxy stamped `no-store` over everything; it does not, and
+`api/drawings/[id]/thumbnail` depends on that. The blanket `no-store` on HTML is
+Next's default for a dynamic render. Corrected in ADR 0008 — do not reintroduce the
+claim.
 
 **tldraw UI is injected, not wrapped.** Pass a module-scope `TLComponents` object
 (a fresh object each render remounts every panel) mapping zones — `MenuPanel`,

@@ -4,7 +4,7 @@ import { RotateCcw, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { type FunctionComponent, useState } from "react"
-import DrawingPreview from "@/components/tools/draw/drawing-preview"
+import DrawingPreview, { FIRST_ROW } from "@/components/tools/draw/drawing-preview"
 import { buttonClasses } from "@/components/ui/button"
 import { withProgress } from "@/lib/ui/progress"
 import { cn } from "@/lib/utils"
@@ -146,7 +146,7 @@ const TrashGallery: FunctionComponent<Props> = ({ drawings }) => {
       </div>
 
       <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {drawings.map(drawing => (
+        {drawings.map((drawing, index) => (
           <li key={drawing.id}>
             <div className={cn(
               "overflow-hidden rounded-xl border border-border bg-card",
@@ -160,6 +160,7 @@ const TrashGallery: FunctionComponent<Props> = ({ drawings }) => {
                   drawingId={drawing.id}
                   title={drawing.title}
                   thumbnailVersion={drawing.thumbnailVersion}
+                  priority={index < FIRST_ROW}
                 />
               </div>
 

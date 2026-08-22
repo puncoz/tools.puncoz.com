@@ -17,18 +17,37 @@ const IMG = "src/assets/img"
 const APP = "src/app"
 
 /**
+ * The header wordmark's display size, doubled for retina. It renders in a 64x28
+ * box (`h-7 w-auto` in `logo.tsx`), so 256 leaves headroom above 2x and still
+ * lands around 4KB.
+ *
+ * This resize is the whole fix from ADR 0008. Trimmed but unresized, these were
+ * 4042px wide, and `next/image` — correctly, given a static import with no
+ * `sizes` — served the top of the srcSet: a measured 266KB of image across the
+ * two variants, preloaded at the highest priority on every route, to paint a
+ * 64px logo. The `sizes` attribute in `logo.tsx` is the second half of the fix;
+ * this is the half that cannot be undone by editing a component.
+ */
+const WORDMARK_WIDTH = 256
+
+/**
  * The wordmarks ship with ~250px of transparent padding baked in, which at
  * header size reads as the logo being small and sitting too high. Trimmed to
- * their ink; the originals are left untouched.
+ * their ink, then scaled to the size they are actually drawn at; the originals
+ * are left untouched, and the Open Graph card below is built from those rather
+ * than from these, so it keeps its full resolution.
  */
-const trim = async (from: string, to: string) => {
-  const info = await sharp(from).trim({ threshold: 0 }).toFile(to)
+const headerWordmark = async (from: string, to: string) => {
+  const info = await sharp(from)
+    .trim({ threshold: 0 })
+    .resize({ width: WORDMARK_WIDTH })
+    .toFile(to)
 
-  console.log(`${to}  ${info.width}x${info.height}`)
+  console.log(`${to}  ${info.width}x${info.height}  ${info.size}B`)
 }
 
-await trim(`${IMG}/logo.png`, `${IMG}/wordmark.png`)
-await trim(`${IMG}/logo-dark.png`, `${IMG}/wordmark-dark.png`)
+await headerWordmark(`${IMG}/logo.png`, `${IMG}/wordmark.png`)
+await headerWordmark(`${IMG}/logo-dark.png`, `${IMG}/wordmark-dark.png`)
 
 // `icon.png` and `apple-icon.png` are App Router conventions: Next emits the
 // <link> tags for them, so there is no head markup to keep in step.

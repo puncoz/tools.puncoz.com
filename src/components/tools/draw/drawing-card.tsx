@@ -24,11 +24,13 @@ type GalleryDrawing = {
 type Props = Readonly<{
   drawing: GalleryDrawing
   onChanged: () => void
+  /** Set for the first row only — see `DrawingPreview`. */
+  priority?: boolean
 }>
 
 const menuItemClasses = "flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-accent disabled:opacity-50"
 
-const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
+const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged, priority = false }) => {
   const { open, setOpen, ref } = useDismissableMenu<HTMLDivElement>()
   const [busy, setBusy] = useState(false)
   const [renaming, setRenaming] = useState(false)
@@ -93,6 +95,7 @@ const DrawingCard: FunctionComponent<Props> = ({ drawing, onChanged }) => {
       drawingId={drawing.id}
       title={drawing.title}
       thumbnailVersion={drawing.thumbnailVersion}
+      priority={priority}
     />
   )
 

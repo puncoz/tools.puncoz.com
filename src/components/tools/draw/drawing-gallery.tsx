@@ -4,6 +4,7 @@ import { FilePlus2, Search, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { type FunctionComponent, useEffect, useMemo, useRef, useState } from "react"
 import DrawingCard, { type GalleryDrawing } from "@/components/tools/draw/drawing-card"
+import { FIRST_ROW } from "@/components/tools/draw/drawing-preview"
 import { inputClasses } from "@/components/ui/input"
 import { startNavigation, withProgress } from "@/lib/ui/progress"
 import { cn } from "@/lib/utils"
@@ -166,9 +167,13 @@ const DrawingGallery: FunctionComponent<Props> = ({ drawings }) => {
       {visible.length > 0
         ? (
           <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {visible.map(drawing => (
+            {visible.map((drawing, index) => (
               <li key={drawing.id}>
-                <DrawingCard drawing={drawing} onChanged={() => router.refresh()}/>
+                <DrawingCard
+                  drawing={drawing}
+                  onChanged={() => router.refresh()}
+                  priority={index < FIRST_ROW}
+                />
               </li>
             ))}
           </ul>

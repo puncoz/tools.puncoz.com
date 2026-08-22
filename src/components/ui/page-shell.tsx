@@ -38,8 +38,10 @@ const PageShell: FunctionComponent<Props> = ({ crumbs, className, children }) =>
             exists on five pages out of nine is exactly the scattered header this
             replaced. The cost is that reading the session makes every page
             dynamic — including the two legal documents, which used to
-            prerender. They are re-rendered per request anyway, since AuthKit's
-            proxy stamps `no-store` on everything it touches. */}
+            prerender, and which are therefore rendered per request and sent
+            with Next's own `no-store` for a dynamic render. (That last clause
+            used to credit the `no-store` to AuthKit's proxy; it is Next's —
+            see ADR 0008.) */}
         <UserMenu/>
       </PageHeader>
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import SharedCanvas from "@/components/tools/draw/shared-canvas"
+import SharedCanvasLoader from "@/components/tools/draw/shared-canvas-loader"
 import { clientConfig } from "@/config/client"
 import { getDrawingByShareToken, getShareThumbnail } from "@/lib/drawings/queries"
 import { isShareTokenShaped } from "@/lib/drawings/share"
@@ -77,7 +77,7 @@ const SharedDrawingPage = async ({ params }: Props) => {
 
   return (
     <>
-      <SharedCanvas token={token} document={drawing.document}/>
+      <SharedCanvasLoader token={token} document={drawing.document}/>
 
       <div className="pointer-events-none fixed left-3 top-3 z-[100000] flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-card-foreground shadow-sm">
         <span className="max-w-[50vw] truncate text-sm font-medium">{drawing.title}</span>

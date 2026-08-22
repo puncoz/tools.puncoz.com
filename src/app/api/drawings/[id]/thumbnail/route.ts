@@ -24,13 +24,22 @@ type Context = { params: Promise<{ id: string }> }
  * existed has only a light preview until it is next opened, and a gallery of
  * broken images would be a far worse answer than a gallery of light ones.
  *
- * CAVEAT: the `Cache-Control` below does not currently take effect. AuthKit's
- * proxy overwrites it with `no-store` on every response it touches, and the route
- * cannot be excluded from the proxy — `withAuth` throws on any path the proxy
- * does not cover. So previews are refetched on each gallery visit. They are only
- * a few kilobytes each, which is why this is acceptable rather than blocking; the
- * header and the cache key stay so that caching starts working by itself if that
- * behaviour ever changes, or if a CDN is put in front.
+ * The `Cache-Control` below takes effect, and this comment used to say it did
+ * not — that AuthKit's proxy overwrote it with `no-store` on every response it
+ * touched, so previews were refetched on every gallery visit. Measured against
+ * production, the header now arrives at the browser intact. `authkit-nextjs@4`
+ * exports `setCachePreventionHeaders` but never calls it, and sets
+ * `cache-control` in only one place — when it is itself setting a cookie and
+ * none is present (`middleware-helpers.js`). The blanket
+ * `private, no-cache, no-store, max-age=0, must-revalidate` still seen on HTML
+ * documents is Next's own default for a dynamic render, not the proxy's. See
+ * ADR 0008.
+ *
+ * So repeat visits are served from disk. What is *not* cheap is the first fetch:
+ * measured at ~2s for ~9KB, essentially all of it function invocation, session
+ * unsealing and a database read rather than bytes on the wire. That is why the
+ * gallery hints the first row at high priority, and it is the reason to be
+ * careful about how many of these a page fires at once.
  */
 export const GET = async (request: Request, { params }: Context): Promise<Response> => {
   const user = await getDbUser()

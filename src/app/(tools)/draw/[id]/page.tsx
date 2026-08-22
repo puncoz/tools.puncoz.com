@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { after } from "next/server"
 import { cache } from "react"
-import DrawCanvas from "@/components/tools/draw-canvas"
+import DrawCanvasLoader from "@/components/tools/draw-canvas-loader"
 import { getDbUser, requireDbUser } from "@/lib/auth/current-user"
 import { getDrawing, touchDrawing } from "@/lib/drawings/queries"
 
@@ -62,10 +63,17 @@ const DrawPage = async ({ params }: Props) => {
     notFound()
   }
 
-  await touchDrawing(user.id, drawing.id)
+  // Scheduled rather than awaited: nobody is waiting to see `lastOpenedAt`, and
+  // awaiting it held the response open for a full database round trip. `after`
+  // and not a floating promise — in a serverless function the instance can be
+  // frozen the moment the response is sent, so an un-awaited write is one that
+  // usually lands. The cost is that a failure here is now silent, which is the
+  // right trade for bookkeeping and the wrong one for anything the reader
+  // depends on. See ADR 0010.
+  after(() => touchDrawing(user.id, drawing.id))
 
   return (
-    <DrawCanvas
+    <DrawCanvasLoader
       // Forces a fresh store when switching drawings; without it the previous
       // document would linger and be autosaved over the new one.
       key={drawing.id}
