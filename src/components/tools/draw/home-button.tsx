@@ -5,8 +5,7 @@ import Link from "next/link"
 import type { FunctionComponent } from "react"
 import { DefaultMenuPanel } from "tldraw"
 import IconPicker from "@/components/tools/draw/icon-picker"
-import { AWS_ICON_TYPE } from "@/components/tools/draw/shapes/aws-icon-shape-util"
-import { CLOUDFLARE_ICON_TYPE } from "@/components/tools/draw/shapes/cloudflare-icon-shape-util"
+import { SHAPE_TYPE_BY_SET_ID } from "@/components/tools/draw/icon-shape-types"
 import { AWS_ICON_SET, CLOUDFLARE_ICON_SET } from "@/lib/icon-sets"
 
 /**
@@ -32,9 +31,9 @@ const HomeButton: FunctionComponent = () => (
 
     <DefaultMenuPanel/>
 
-    <IconPicker set={AWS_ICON_SET} shapeType={AWS_ICON_TYPE}/>
+    <IconPicker set={AWS_ICON_SET} shapeType={SHAPE_TYPE_BY_SET_ID[AWS_ICON_SET.id]}/>
 
-    <IconPicker set={CLOUDFLARE_ICON_SET} shapeType={CLOUDFLARE_ICON_TYPE}/>
+    <IconPicker set={CLOUDFLARE_ICON_SET} shapeType={SHAPE_TYPE_BY_SET_ID[CLOUDFLARE_ICON_SET.id]}/>
   </div>
 )
 

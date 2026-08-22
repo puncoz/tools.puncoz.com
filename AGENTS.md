@@ -145,6 +145,8 @@ src/
     ui/                   generic primitives — button, menu, page-shell, theme-menu
     tools/*-canvas-loader  client modules that lazy-load tldraw behind a skeleton
     tools/draw/           canvas chrome, hooks, shapes, skeletons
+    tools/draw/command-palette/  the "/" palette: store, commands, dialog
+    tools/draw/tools/            custom tldraw StateNode tools
     analytics/ auth/ admin/ account/ settings/ seo/
   config/                 THE ONLY place that reads process.env
   db/                     schema/ + the connection
@@ -292,6 +294,35 @@ claim.
 `components/tools/draw/floating-menu.ts`, and dropdowns need its `DROPDOWN_CLASSES`
 z-index, because tldraw's own panels stack to 99999.
 
+**A canvas mode is a `StateNode`, not a listener.** Click-to-place lives in
+`tools/place-icon-tool.ts`, registered through the `Tldraw` element's `tools`
+prop (which merges with tldraw's defaults rather than replacing them). The
+payload travels as `setCurrentTool`'s second argument and arrives in `onEnter`,
+because tools are constructed once, not per use. **Note the trap:**
+`setCurrentTool` and `StateNode.transition` default that argument to `{}`, not
+`undefined`, so a guard must test a required *field* — `!pending?.shapeType` —
+never the object's truthiness. A one-shot `pointerdown` listener is the
+tempting alternative and owns every exit path itself (Escape, right-click, pan,
+tool switch, unmount). See ADR 0011.
+
+**`/` opens the command palette and must never eat a typed slash.** The guard
+in `command-palette/palette-store.ts` is seven conditions, every one
+load-bearing; read the comments before touching it. Both failure directions are
+silent. While open, the palette registers with `editor.menus` — that
+registration, not any `stopPropagation`, is what makes tldraw's single-key
+shortcuts stand down, and it must be released on unmount (`deleteOpenMenu`,
+**not** `removeOpenMenu`, which does not exist) or the canvas is left with
+every shortcut dead and no visible cause. **That same registration is also
+what mounts tldraw's `MenuClickCapture` overlay**, a `position:fixed; inset:0`
+div tldraw renders whenever `editor.menus.hasAnyOpenMenus()` is true, pinned at
+the same z-index as the `InFrontOfTheCanvas` zone the palette renders through
+(`--tl-layer-canvas-in-front` and `--tl-layer-menu-click-capture` are both
+`250`, and the capture layer mounts later in the DOM) — so a dialog left
+inside that zone sits underneath its own click-capture layer and is
+unclickable. The palette's dialog is portalled to `document.body` for exactly
+this reason; do not move it back in front of the canvas without re-solving
+that collision.
+
 **Menus** reuse `useDismissableMenu` from `components/ui/menu.ts` — never hand-roll
 outside-click handling.
 
@@ -302,10 +333,14 @@ each. To add a third: a build script writing SVGs into a gitignored
 `shapes/icon-shape-util.tsx` supplying a type string and URL, registration in
 `shapes/index.ts`, an entry in `lib/credits.ts` (the set will not construct
 without one), and an `<IconPicker>` in `home-button.tsx`. No shape logic and
-no picker code should be written. Two traps, both silent: a set registered in
-`shapes/index.ts` reaches *both* canvases or shared drawings break for viewers
-only, and the exporter strips an icon's root `<svg>`, so a `fill` must sit on an
-inner element or it disappears from every thumbnail while looking fine on canvas.
+no picker code should be written. A new set gains command-palette entries
+automatically via `ICON_SETS`, but needs an entry in
+`components/tools/draw/icon-shape-types.ts` or its icons are searchable and
+inert — chosen in the palette but not placed. Two traps, both silent: a set
+registered in `shapes/index.ts` reaches *both* canvases or shared drawings
+break for viewers only, and the exporter strips an icon's root `<svg>`, so a
+`fill` must sit on an inner element or it disappears from every thumbnail while
+looking fine on canvas.
 
 **Tailwind v4 gotcha:** a descendant selector (`[&_p]:…`, specificity 0,1,1)
 outranks an element-level utility (0,1,0). Dark mode is a class on `<html>` via

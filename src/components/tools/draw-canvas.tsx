@@ -11,8 +11,10 @@ import {
   type TLComponents,
 } from "tldraw"
 import { createAssetStore } from "@/components/tools/draw/asset-store"
+import CommandPalette from "@/components/tools/draw/command-palette/command-palette"
 import { DrawingContext } from "@/components/tools/draw/drawing-context"
 import { customShapeUtils } from "@/components/tools/draw/shapes"
+import { customTools } from "@/components/tools/draw/tools/place-icon-tool"
 import { clientConfig } from "@/config/client"
 import HomeButton from "@/components/tools/draw/home-button"
 import ProjectMenu from "@/components/tools/draw/project-menu"
@@ -32,6 +34,15 @@ const components: TLComponents = {
   MenuPanel: HomeButton,
   TopPanel: ProjectMenu,
   SharePanel,
+  // `InFrontOfTheCanvas` is only where the palette's `editor.menus` registration
+  // has to live to suppress tldraw's shortcuts — it is not where the dialog
+  // visually ends up. That zone renders inside `.tl-canvas__in-front`, its own
+  // stacking context capped at the same z-index as tldraw's `MenuClickCapture`
+  // overlay (which registering an open menu is what mounts), so a dialog left
+  // here would be stacked *below* tldraw's panels and unclickable. The
+  // component portals its actual dialog out to `document.body` for exactly
+  // this reason — see the comment on that portal in `command-palette.tsx`.
+  InFrontOfTheCanvas: CommandPalette,
 }
 
 /** A freshly created drawing stores `{}`; only a real snapshot has a `store` key. */
@@ -93,6 +104,7 @@ const DrawCanvas: FunctionComponent<Props> = ({ drawing }) => {
         <Tldraw
           store={store}
           shapeUtils={customShapeUtils}
+          tools={customTools}
           components={components}
           licenseKey={clientConfig.tldraw.licenseKey}
           onMount={setEditor}
