@@ -1,6 +1,7 @@
 import "server-only"
 import { eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
+import { cache } from "react"
 import { getDb } from "@/db"
 import { type DbUser, users } from "@/db/schema"
 import { canUseTools } from "@/lib/auth/access"
@@ -24,6 +25,31 @@ import type { User } from "@workos-inc/node"
  */
 
 /**
+ * The lookup half of `toDbUser`, deduped for the lifetime of one request.
+ *
+ * The `(tools)` layout and the page inside it both call `requireDbUser`, so
+ * without this every authenticated render pays for the identical lookup more
+ * than once — and in production the database is a round trip away rather than
+ * next door (ADR 0005). Measured at five lookups per navigation before this,
+ * one after.
+ *
+ * Keyed on the WorkOS id rather than on the user object because `cache()`
+ * compares arguments by identity, and AuthKit's `withAuth()` unseals the cookie
+ * into a fresh object on every call — an object key would never hit.
+ *
+ * Per request, not across them: two users can never see each other's row.
+ */
+const findByWorkosId = cache(async (workosId: string): Promise<DbUser | undefined> => {
+  const [existing] = await getDb()
+    .select()
+    .from(users)
+    .where(eq(users.workosId, workosId))
+    .limit(1)
+
+  return existing
+})
+
+/**
  * Resolves a WorkOS user to its local row, creating it if absent.
  *
  * The sign-in callback's sync is intentionally non-fatal, so a database outage
@@ -31,15 +57,8 @@ import type { User } from "@workos-inc/node"
  * drawings. Everything that owns data keys off `DbUser.id` rather than the
  * WorkOS id, so rows are not coupled to the identity provider.
  */
-const toDbUser = async (workosUser: User): Promise<DbUser> => {
-  const [existing] = await getDb()
-    .select()
-    .from(users)
-    .where(eq(users.workosId, workosUser.id))
-    .limit(1)
-
-  return existing ?? await syncUser(workosUser)
-}
+const toDbUser = async (workosUser: User): Promise<DbUser> =>
+  await findByWorkosId(workosUser.id) ?? await syncUser(workosUser)
 
 /**
  * The signed-in user whatever their access status.

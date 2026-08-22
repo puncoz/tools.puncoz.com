@@ -4,7 +4,7 @@ import DrawingGallery from "@/components/tools/draw/drawing-gallery"
 import TrashGallery from "@/components/tools/draw/trash-gallery"
 import PageShell from "@/components/ui/page-shell"
 import { requireDbUser } from "@/lib/auth/current-user"
-import { countTrashedDrawings, listDrawings, listTrashedDrawings } from "@/lib/drawings/queries"
+import { countTrashedDrawings, type DrawingSummary, listDrawings, listTrashedDrawings } from "@/lib/drawings/queries"
 import { toolBySlug } from "@/lib/tools"
 import { relativeTime } from "@/lib/ui/relative-time"
 import { cn } from "@/lib/utils"
@@ -48,9 +48,14 @@ const DrawIndexPage = async ({ searchParams }: Props) => {
   const now = new Date()
 
   // Only ever one list: the gallery pays for a count, not for the trash itself.
-  const drawings = showTrash ? [] : await listDrawings(user.id)
   const trashed = showTrash ? await listTrashedDrawings(user.id) : []
-  const trashedCount = showTrash ? trashed.length : await countTrashedDrawings(user.id)
+
+  // Issued together rather than awaited one after the other. The two are
+  // independent, and serialising them costs a second round trip to a database
+  // that sits a region away from the function in production (ADR 0005).
+  const [drawings, trashedCount]: [DrawingSummary[], number] = showTrash
+    ? [[], trashed.length]
+    : await Promise.all([listDrawings(user.id), countTrashedDrawings(user.id)])
 
   return (
     <PageShell crumbs={showTrash ? ["Draw", "Trash"] : ["Draw"]}>

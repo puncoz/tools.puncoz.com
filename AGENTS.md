@@ -148,6 +148,7 @@ drizzle/                  SQL migrations (generated, then renamed by hand)
 docs/adr/                 decision records            ← new work starts here
 docs/superpowers/         specs & plans
 scripts/                  build-time generators (icon sets, brand assets)
+vercel.json               function region pin — see §9
 ```
 
 **Where does new code go?** Data access → `lib/<domain>/queries.ts`. Pure helpers →
@@ -219,7 +220,16 @@ state, effects, or browser APIs. Keep client components leaf-ward — fetch on t
 server and pass data down.
 
 **Deduping a query between metadata and page:** wrap it in React `cache()` and call
-it with identical arguments from both.
+it with identical arguments from both. The same applies between a **layout and the
+page inside it** — `(tools)/layout.tsx` and every page under it both call
+`requireDbUser()`, so the identity lookup in `lib/auth/current-user.ts` is cached for
+exactly this reason.
+
+**Key a `cache()` on primitives, never on an object.** `cache()` compares arguments by
+identity, so an object argument that is rebuilt per call never hits. AuthKit's
+`withAuth()` unseals the cookie into a fresh `User` every time it is called, which is
+why the cached lookup takes `workosUser.id` and not `workosUser`. A cache keyed this
+way is per request, not shared across them.
 
 **Browser-persisted state** (theme, consent) uses a module-level store plus
 `useSyncExternalStore` — `subscribe*` / `get*Snapshot` / `getServer*Snapshot`. Do
@@ -274,6 +284,18 @@ treatment.
 
 The database is **shared with production**. A migration applied locally is applied
 everywhere; assume any destructive SQL is real.
+
+**The database is in `ap-northeast-2` (Seoul), and `vercel.json` pins the functions to
+`icn1` to sit beside it.** These two must move together. Vercel's default region is
+`iad1` (Virginia), which put every query on a ~200ms Pacific round trip while local
+development — same continent as the database — stayed fast, so the cost was invisible
+where it was introduced and only showed up in production. Nothing fails if the pin is
+removed or the database is relocated: the site just quietly gets slow again. See
+[ADR 0005](docs/adr/0005-colocate-functions-with-the-database.md).
+
+A corollary worth internalising: **a round trip to the database is not free, and
+sequential `await`s cost one each.** Independent queries in a render go in a
+`Promise.all`.
 
 ---
 

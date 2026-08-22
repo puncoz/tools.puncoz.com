@@ -86,6 +86,16 @@ secret, so it authenticates on its own.
 lazily-evaluated getters; nothing else touches `process.env`. Eager reads break
 `next build`.
 
+**The functions are pinned to Seoul, next to the database.** Supabase is in
+`ap-northeast-2`; Vercel's default region is `iad1` in Virginia, which sent every
+query on a ~200ms round trip across the Pacific — while local development, sharing a
+continent with the database, stayed fast and hid the cost entirely. `vercel.json`
+pins the compute to `icn1`. This deliberately trades latency for European and North
+American visitors, who are not the audience, in exchange for the database being close
+to both the app and its author. If the database ever moves, that pin moves with it —
+nothing breaks if it does not, the site merely gets slow again.
+[ADR 0005](docs/adr/0005-colocate-functions-with-the-database.md) has the numbers.
+
 **`src/proxy.ts`, not the repo root.** Next 16 replaces `middleware.ts` with
 `proxy.ts`, and in a `src/` project it must live in `src/` or it is silently
 ignored. Every authenticated route must stay inside its matcher: `withAuth`
